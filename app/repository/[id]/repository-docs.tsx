@@ -12,10 +12,10 @@ const RepositoryDocs = ({ repository, user }: RepositoryDocsProps) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar repository={repository} user={user} />
-      <div className="max-w-2xl w-full border rounded my-4 py-2">
+      <div className="max-w-2xl w-full border rounded my-4 p-2 mt-20 mx-auto">
         {repository.parsedEnv}
-        {repository.contributing}
-        {repository.readme}
+        {repository.parsedContributing}
+        {repository.parsedReadme}
       </div>
     </div>
   );

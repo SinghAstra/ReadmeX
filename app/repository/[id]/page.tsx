@@ -27,6 +27,8 @@ export default async function RepositoryPage({
     redirect(`/logs/${repository.id}`);
   }
 
+  console.log("repository.contributing is ", repository.contributing);
+
   const readmeContent = repository.readme || "No Readme.md For this File";
   const contributingContent =
     repository.contributing || "No Contributing.md For this File";
