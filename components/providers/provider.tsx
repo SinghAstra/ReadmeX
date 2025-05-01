@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import React, { ReactNode, Suspense } from "react";
-// import { RepositoryProvider } from "../context/repository";
+import { RepositoryProvider } from "../context/repository";
 
 interface ProviderProps {
   children: ReactNode;
@@ -41,9 +41,7 @@ const Providers = ({ children }: ProviderProps) => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <SessionProvider>
-        {/* <RepositoryProvider> */}
-        {children}
-        {/* </RepositoryProvider> */}
+        <RepositoryProvider>{children}</RepositoryProvider>
       </SessionProvider>
     </Suspense>
   );
