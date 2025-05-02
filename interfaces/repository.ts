@@ -12,4 +12,5 @@ export interface RepositoryWithDocs extends Repository {
   > | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parsedEnv: ReactElement<any, string | JSXElementConstructor<any>> | null;
+  envContent: string;
 }

@@ -39,16 +39,15 @@ export default async function RepositoryPage({
 
   let parsedEnv = null;
 
-  if (repository.env.length > 0) {
-    const envContent = repository.env.map((env) => `${env}=\n`).join("");
-    const wrappedEnvContent = `\`\`\`\n${envContent}\n\`\`\``;
+  const envContent = repository.env.map((env) => `${env}=\n`).join("");
+  const wrappedEnvContent = `\`\`\`\n${envContent}\n\`\`\``;
 
-    const { content } = await parseMdx(wrappedEnvContent);
-    parsedEnv = content;
-  }
+  const { content } = await parseMdx(wrappedEnvContent);
+  parsedEnv = content;
 
   const parsedRepository = {
     ...repository,
+    envContent,
     parsedReadme,
     parsedContributing,
     parsedEnv,
