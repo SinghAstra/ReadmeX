@@ -28,12 +28,7 @@ export default async function RepositoryPage({
   }
 
   const readmeContent = repository.readme || "No Readme.md For this File";
-  const contributingContent =
-    repository.contributing || "No Contributing.md For this File";
-
   const { content: parsedReadme } = await parseMdx(readmeContent);
-
-  const { content: parsedContributing } = await parseMdx(contributingContent);
 
   let parsedEnv = null;
 
@@ -47,7 +42,6 @@ export default async function RepositoryPage({
     ...repository,
     envContent,
     parsedReadme,
-    parsedContributing,
     parsedEnv,
   };
 

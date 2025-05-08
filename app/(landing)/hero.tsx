@@ -50,9 +50,8 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
 
             <p className="mb-4 text-lg tracking-tight text-muted-foreground md:text-xl text-balance">
               Just drop a GitHub repo link. We’ll analyze the codebase and
-              auto-generate your <code>README.md</code>,{" "}
-              <code>CONTRIBUTING.md</code>, and <code>.env.example</code> to
-              kickstart documentation.
+              auto-generate your <code>.env.example</code> &{" "}
+              <code>README.md</code> to kickstart documentation.
             </p>
             <div className="flex items-center justify-center gap-4 z-50">
               <BackgroundShine className="rounded-md">
