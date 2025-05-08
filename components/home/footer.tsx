@@ -1,7 +1,7 @@
 import { siteConfig } from "@/config/site";
-import FadeIn from "../../global/fade-in";
-import MaxWidthWrapper from "../../global/max-width-wrapper";
-import BorderHoverLink from "../../ui/border-hover-link";
+import FadeIn from "../global/fade-in";
+import MaxWidthWrapper from "../global/max-width-wrapper";
+import BorderHoverLink from "../ui/border-hover-link";
 
 const Footer = () => {
   return (

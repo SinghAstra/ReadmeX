@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import { User } from "next-auth";
 import Link from "next/link";
 import React from "react";
-import FadeIn from "../../global/fade-in";
-import MaxWidthWrapper from "../../global/max-width-wrapper";
-import { AvatarMenu } from "../../ui/avatar-menu";
-import SignIn from "../../ui/sign-in";
+import FadeIn from "../global/fade-in";
+import MaxWidthWrapper from "../global/max-width-wrapper";
+import { AvatarMenu } from "../ui/avatar-menu";
+import SignIn from "../ui/sign-in";
 
 interface NavbarProps {
   user: User | undefined;

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  addUserRepository,
-  useRepository,
-} from "@/components/context/repository";
+import { useToastContext } from "@/components/providers/toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,19 +12,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { fetchAllUserRepository } from "@/lib/api";
 import { parseGithubUrl } from "@/lib/github";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { AlertCircle, SearchIcon, SparklesIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
-import { toast } from "sonner";
-import { fetchProcessingRepository, stopRepositoryProcessing } from "./action";
+import { mutate } from "swr";
 
 function DashboardPage() {
   const [url, setUrl] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
+  const { setToastMessage } = useToastContext();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
@@ -37,7 +34,6 @@ function DashboardPage() {
   const actionQuery = searchParams.get("action");
   const router = useRouter();
   const [showAlert, setShowAlert] = useState(false);
-  const { dispatch } = useRepository();
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -45,28 +41,44 @@ function DashboardPage() {
     }
   }, [actionQuery]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    const validation = parseGithubUrl(url);
+  const handleSubmit = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+      setIsProcessing(true);
+      const validation = parseGithubUrl(url);
 
-    if (!validation.isValid) {
-      setIsProcessing(false);
-      setMessage(
-        validation.message ? validation.message : "Invalid GitHub URL"
-      );
-      return;
+      if (!validation.isValid) {
+        setIsProcessing(false);
+        setToastMessage(
+          validation.message ? validation.message : "Invalid GitHub URL"
+        );
+        return;
+      }
+
+      const response = await fetch("/api/repository/processing");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setToastMessage(data.message);
+        return;
+      }
+
+      const pendingRepositories = data.repositories;
+
+      if (pendingRepositories.length > 0) {
+        setIsProcessing(false);
+        setShowAlert(true);
+        return;
+      }
+
+      processRepository();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
+      setToastMessage("Check Your Network Connection");
     }
-
-    const pendingRepositories = await fetchProcessingRepository();
-
-    if (pendingRepositories.length > 0) {
-      setIsProcessing(false);
-      setShowAlert(true);
-      return;
-    }
-
-    processRepository();
   };
 
   const processRepository = async () => {
@@ -84,11 +96,11 @@ function DashboardPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setMessage(data.message);
+        setToastMessage(data.message);
         return;
       }
 
-      dispatch(addUserRepository(data.repository));
+      mutate(fetchAllUserRepository);
 
       setIsSuccess(true);
       setUrl("");
@@ -102,17 +114,33 @@ function DashboardPage() {
         console.log("error.stack is ", error.stack);
         console.log("error.message is ", error.message);
       }
-      setMessage("Check Your Network Connection");
+      setToastMessage("Check Your Network Connection");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleContinueWithNewRepo = async () => {
-    setIsProcessing(true);
-    setShowAlert(false);
-    await stopRepositoryProcessing();
-    processRepository();
+    try {
+      setIsProcessing(true);
+      setShowAlert(false);
+      const response = await fetch("/api/repository/stop-processing");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setToastMessage(data.message);
+        return;
+      }
+
+      mutate(fetchAllUserRepository);
+      processRepository();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
+      setToastMessage("Check Your Network Connection");
+    }
   };
 
   const handleCancelNewRepo = () => {
@@ -155,12 +183,6 @@ function DashboardPage() {
     };
   }, [showGuide, dismissGuide]);
 
-  useEffect(() => {
-    if (!message) return;
-    toast(message);
-    setMessage(null);
-  }, [message]);
-
   return (
     <div className="w-full m-2">
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
@@ -168,13 +190,13 @@ function DashboardPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center">
               <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
-              Pending Repository Processing
+              Pending Repository Analysis
             </AlertDialogTitle>
             <AlertDialogDescription>
-              You have repository processing already in progress. Due to API
-              restrictions, starting a new repository will stop the processing
-              of all other repositories. Do you want to continue with the new
-              repository processing ?
+              You have repository analysis already in progress. Due to API
+              restrictions, starting a new analysis will stop the processing of
+              all other repositories. Do you want to continue with the new
+              repository analysis?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -185,7 +207,7 @@ function DashboardPage() {
               onClick={handleContinueWithNewRepo}
               className="w-full"
             >
-              Continue with new repository
+              Continue with new analysis
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -250,7 +272,7 @@ function DashboardPage() {
                           Processing...
                         </div>
                       ) : (
-                        "Generate Files"
+                        "Analyze"
                       )}
                     </Button>
                   </div>
@@ -305,7 +327,7 @@ function DashboardPage() {
                     Processing...
                   </div>
                 ) : (
-                  "Generate Files"
+                  "Analyze"
                 )}
               </Button>
             </div>

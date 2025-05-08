@@ -1,6 +1,6 @@
 import FadeSlideIn from "@/components/global/fade-slide-in";
-import Footer from "@/components/providers/home/footer";
-import Navbar from "@/components/providers/home/navbar";
+import Footer from "@/components/home/footer";
+import Navbar from "@/components/home/navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
