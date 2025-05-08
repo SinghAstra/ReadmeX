@@ -18,8 +18,6 @@ export async function getRepositoryData(id: string) {
       },
     });
 
-    console.log("repository is ", repository);
-
     if (!repository) {
       return null;
     }
