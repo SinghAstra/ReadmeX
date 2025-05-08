@@ -2,7 +2,6 @@ import { Octokit } from "@octokit/rest";
 
 export function parseGithubUrl(url: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
-
   if (!url) {
     return { isValid: false, message: "Please enter a GitHub repository URL" };
   }
