@@ -16,6 +16,13 @@ export async function getRepositoryData(id: string) {
         id,
         userId: session.user.id,
       },
+      include: {
+        files: true,
+      },
+    });
+
+    repository?.files.map((file) => {
+      console.log("file.name is ", file.name);
     });
 
     if (!repository) {
