@@ -12,6 +12,7 @@ import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 interface HeroSectionProps {
   isAuthenticated: boolean;
@@ -27,6 +28,23 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
       redirect("/dashboard");
     }
   };
+
+    useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        const response = await fetch("/api/wake-up");
+        const data = await response.json();
+        console.log("wakeUpServer Response", data);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log("error.stack is ", error.stack);
+          console.log("error.message is ", error.message);
+        }
+      }
+    };
+
+    wakeUpServer();
+  }, []);
 
   return (
     <div className="overflow-x-hidden scrollbar-hide ">
