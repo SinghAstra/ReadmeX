@@ -1,6 +1,6 @@
 # ReadmeX
 
-ReadmeX generates readme.md and .env.example for any public github repository.
+ReadmeX helps users generates readme.md and .env.example for any public github repository.
 
 ## 🧰 Technology Stack
 
