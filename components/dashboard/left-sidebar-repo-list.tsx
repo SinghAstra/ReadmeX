@@ -1,3 +1,5 @@
+"use client";
+
 import { Repository } from "@prisma/client";
 import React from "react";
 import EmptyRepositoriesSidebarRepoList from "./empty/sidebar-repo-list";

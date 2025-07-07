@@ -21,6 +21,31 @@ const getStatusColor = (status: RepositoryStatus) => {
   return "bg-yellow-500";
 };
 
+const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
+  return (
+    <div className="flex items-center gap-3 rounded border p-3 hover:bg-muted/20  cursor-pointer transition-colors">
+      <Avatar className="h-8 w-8">
+        <AvatarImage src={repository.avatarUrl || ""} alt={repository.owner} />
+        <AvatarFallback>{repository.owner[0].toUpperCase()}</AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col">
+        <span className="font-medium line-clamp-1">{repository.name}</span>
+        <span className="text-sm text-muted-foreground">
+          {repository.owner}
+        </span>
+      </div>
+      <div className="ml-auto">
+        <div
+          className={cn(
+            "h-2 w-2 rounded-full",
+            getStatusColor(repository.status)
+          )}
+        />
+      </div>
+    </div>
+  );
+};
+
 export function RepositoryCard({ repository }: RepositoryCardProps) {
   const [message, setMessage] = useState<string | null>(null);
 
@@ -45,28 +70,3 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
     </Link>
   );
 }
-
-const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
-  return (
-    <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={repository.avatarUrl || ""} alt={repository.owner} />
-        <AvatarFallback>{repository.owner[0].toUpperCase()}</AvatarFallback>
-      </Avatar>
-      <div className="flex flex-col">
-        <span className="font-medium line-clamp-1">{repository.name}</span>
-        <span className="text-sm text-muted-foreground">
-          {repository.owner}
-        </span>
-      </div>
-      <div className="ml-auto">
-        <div
-          className={cn(
-            "h-2 w-2 rounded-full",
-            getStatusColor(repository.status)
-          )}
-        />
-      </div>
-    </div>
-  );
-};
