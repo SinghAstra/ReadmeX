@@ -63,9 +63,9 @@ const LandingPage = ({
             variants={blurInVariant}
             className="text-foreground text-center py-6 text-6xl md:text-7xl lg:text-8xl font-medium "
           >
-            Understand <br />
+            Automate <br />
             <span className="text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text">
-              Repository
+              Documentation
             </span>
           </motion.h1>
           <motion.p
@@ -73,7 +73,7 @@ const LandingPage = ({
             className="mb-8 text-lg md:text-xl tracking-tight text-muted-foreground "
           >
             Give me public github repository url &
-            <br />I will explain the codebase.
+            <br />I will write its Readme.md and .env.example file for you.
           </motion.p>
           <div className="flex items-center justify-center gap-4">
             <motion.div
@@ -140,8 +140,7 @@ const LandingPage = ({
               variants={blurInVariant}
               className="text-5xl text-balance leading-[1.3]"
             >
-              Understand any Public Github Repository by generating Context
-              Aware File Analysis
+              Outsource writing <code>Readme.md & .env.example</code> to us.
             </motion.h1>
             <motion.div
               variants={scaleInVariant}
