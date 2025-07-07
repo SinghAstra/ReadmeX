@@ -8,3 +8,9 @@ export interface RepositoryWithDocs extends Repository {
   parsedEnv: ReactElement<any, string | JSXElementConstructor<any>> | null;
   envContent: string;
 }
+
+export interface RepositoryPreview {
+  owner: string;
+  avatarUrl: string;
+  name: string;
+}

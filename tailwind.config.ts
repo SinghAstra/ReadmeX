@@ -1,3 +1,4 @@
+import tailwindCSSTypography from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
 import tailwindCSSAnimate from "tailwindcss-animate";
 
@@ -7,6 +8,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -74,22 +76,34 @@ const config: Config = {
             height: "0",
           },
         },
+        shine: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-400% 0",
+          },
+        },
+        rotate: {
+          to: {
+            transform: "rotate(360deg)",
+          },
+        },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
       },
       animation: {
+        rotate: "rotate 3s linear infinite both",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shine: "shine 6s linear infinite",
       },
-      shine: {
-        from: {
-          backgroundPosition: "0 0",
-        },
-        to: {
-          backgroundPosition: "-400% 0",
-        },
-      },
     },
   },
-  plugins: [tailwindCSSAnimate],
+  plugins: [tailwindCSSAnimate, tailwindCSSTypography],
 };
 export default config;
