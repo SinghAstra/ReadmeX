@@ -13,7 +13,7 @@ interface RepoDetailsNavbarProps {
 
 const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
   return (
-    <header className=" px-4 py-2 flex items-center justify-between fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className=" px-4 py-2 flex items-center justify-between sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex gap-2 items-center">
         <Link
           href="/dashboard"

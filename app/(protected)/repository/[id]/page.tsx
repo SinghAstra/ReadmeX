@@ -1,5 +1,4 @@
 import { authOptions } from "@/lib/auth-options";
-import { parseMdx } from "@/lib/markdown";
 import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import { getRepositoryData } from "./action";
@@ -27,22 +26,11 @@ export default async function RepositoryPage({
     redirect(`/logs/${repository.id}`);
   }
 
-  const readmeContent = repository.readme || "No Readme.md For this File";
-  const { content: parsedReadme } = await parseMdx(readmeContent);
-
-  let parsedEnv = null;
-
   const envContent = repository.env.map((env) => `${env}=\n`).join("");
-  const wrappedEnvContent = `\`\`\`\n${envContent}\n\`\`\``;
-
-  const { content } = await parseMdx(wrappedEnvContent);
-  parsedEnv = content;
 
   const parsedRepository = {
     ...repository,
     envContent,
-    parsedReadme,
-    parsedEnv,
   };
 
   return <RepositoryDocs repository={parsedRepository} user={session.user} />;

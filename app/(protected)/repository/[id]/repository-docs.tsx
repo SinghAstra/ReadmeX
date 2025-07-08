@@ -17,16 +17,11 @@ const RepositoryDocs = ({ repository, user }: RepositoryDocsProps) => {
         {repository.env.length > 0 && (
           <Document
             documentName=".env.example"
-            parsedDocument={repository.parsedEnv}
-            content={repository.envContent}
+            content={`\`\`\`\n${repository.envContent}\n\`\`\``}
           />
         )}
         {repository.readme && (
-          <Document
-            documentName="Readme.md"
-            parsedDocument={repository.parsedReadme}
-            content={repository.readme}
-          />
+          <Document documentName="Readme.md" content={repository.readme} />
         )}
       </div>
     </div>
