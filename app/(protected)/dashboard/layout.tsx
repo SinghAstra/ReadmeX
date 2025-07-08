@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { fetchRepositories, wakeUpServer } from "./action";
+import { fetchRepositories } from "./action";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -15,7 +15,7 @@ export async function generateMetadata() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/auth/sign-in");
+    redirect("/");
   }
 
   return {
@@ -28,19 +28,17 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/auth/sign-in");
+    redirect("/");
   }
 
   const { repositories } = await fetchRepositories();
 
-  await wakeUpServer();
-
   return (
     <div className="min-h-screen">
       <Navbar user={session.user} />
-      <div className="flex pt-16">
+      <div className="flex">
         <LeftSidebar initialRepositories={repositories} />
-        <main className="hidden md:flex flex-1 ml-96 ">{children}</main>
+        <main className="hidden lg:flex flex-1 ml-96 ">{children}</main>
         <RightSidebar />
       </div>
     </div>

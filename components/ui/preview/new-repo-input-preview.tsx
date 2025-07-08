@@ -17,7 +17,6 @@ function AddNewRepository({
       <div className="flex items-center border-b px-4 py-3">
         <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
         <input
-          type="url"
           placeholder="Paste Your Github repository URL..."
           value={url}
           onChange={(e) => {
@@ -39,9 +38,7 @@ function AddNewRepository({
           <Button
             variant="outline"
             type="submit"
-            className={
-              "relative overflow-hidden rounded bg-transparent hover:bg-muted/20"
-            }
+            className="relative overflow-hidden font-normal rounded bg-muted/60 hover:bg-muted/20 transition-all duration-200"
           >
             Generate Readme
           </Button>
