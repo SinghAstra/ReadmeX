@@ -1,5 +1,4 @@
 import { Repository } from "@prisma/client";
-import { JSXElementConstructor, ReactElement } from "react";
 
 export interface RepositoryWithDocs extends Repository {
   envContent: string;
