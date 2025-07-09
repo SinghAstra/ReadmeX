@@ -21,10 +21,6 @@ export async function getRepositoryData(id: string) {
       },
     });
 
-    repository?.files.map((file) => {
-      console.log("file.name is ", file.name);
-    });
-
     if (!repository) {
       return null;
     }
