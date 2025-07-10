@@ -2,7 +2,7 @@
 
 import Terminal from "@/components/ui/terminal";
 import pusherClient from "@/lib/pusher/client";
-import { Log, Repository } from "@/prisma/generated/prisma-client-js";
+import { Log, Repository } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
