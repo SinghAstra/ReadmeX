@@ -35,3 +35,9 @@ export default async function RepositoryPage({
 
   return <RepositoryDocs repository={parsedRepository} user={session.user} />;
 }
+
+export interface RepositoryPreview {
+  owner: string;
+  avatarUrl: string;
+  name: string;
+}

@@ -2,7 +2,7 @@
 
 import AuthDialog from "@/components/componentX/auth-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RepositoryPreview } from "@/interfaces/github";
+import { RepositoryPreview } from "@/interfaces/repository";
 import { cn } from "@/lib/utils";
 import { slideUpVariant } from "@/lib/variants";
 import { motion } from "framer-motion";

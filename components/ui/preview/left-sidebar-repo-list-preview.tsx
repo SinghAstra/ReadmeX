@@ -1,10 +1,10 @@
 "use client";
 
-import { RepositoryPreview } from "@/interfaces/github";
 import { containerVariant } from "@/lib/variants";
 import { motion } from "framer-motion";
 import React from "react";
 import { SidebarRepositoryCardPreview } from "./left-sidebar-repository-card-preview";
+import { RepositoryPreview } from "@/interfaces/repository";
 
 const LeftSidebarRepoListPreview = ({
   previewRepos,
