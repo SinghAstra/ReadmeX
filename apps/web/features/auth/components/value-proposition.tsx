@@ -17,9 +17,9 @@ export function ValueProposition() {
         </div>
         <blockquote className="space-y-4 relative z-10">
           <p className="text-2xl leading-relaxed font-semibold text-balance">
-            {siteConfig.name} is absolute magic. Dropped a messy legacy repo in,
-            and had a crystal-clear visual map with clean AI summaries for every
-            file in under 30 seconds. Onboarding saved.
+            {siteConfig.name} is absolute magic. Dropped an undocumented legacy
+            repo in, and it instantly generated a production-ready README with a
+            complete architectural breakdown. Writing docs is finally solved.
           </p>
           <div className="flex items-center gap-3 pt-4">
             <Avatar className="h-12 w-12">
