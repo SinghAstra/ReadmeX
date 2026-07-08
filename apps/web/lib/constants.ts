@@ -1,95 +1,96 @@
 import { RepositoryStatus } from "@repo/shared";
-import { Cpu, Link2, Sparkles } from "lucide-react";
+import { Cpu, Link2, FileText } from "lucide-react";
 
 export const processSteps = [
   {
     title: "Paste Repository URL",
     description:
-      "Just drop the link to any public GitHub repository. No complex local setups, no API access tokens, and zero initial configuration required.",
+      "Drop the link to any public GitHub repository. No local setups, no API tokens, and zero configuration needed.",
     icon: Link2,
   },
   {
-    title: "Automated Ingestion",
+    title: "AI Architecture Mapping",
     description:
-      "Our high-performance background queue instantly pulls the code, maps your folder hierarchy, and tracks vital filesystem structural metrics.",
+      "Our system groups your files into logical modules, understanding how your code connects without getting lost in the details.",
     icon: Cpu,
   },
   {
-    title: "Explore with AI Insight",
+    title: "Get Your README",
     description:
-      "Click through a smooth, interactive nested code tree and instantly view resilient, deep AI summaries for every single folder and file.",
-    icon: Sparkles,
+      "Instantly receive a perfect, production-ready README file complete with a system overview, tech stack, and core module breakdown.",
+    icon: FileText,
   },
 ];
+
 export const reviews = [
   {
     name: "Michael Chen",
     rating: 5,
     review:
-      "A total lifesaver for onboarding. I had to dive into a legacy 50k LOC repo, and SummaryX mapped the entire codebase into a clean interactive tree in seconds. I actually understood the system before my first standup.",
+      "A total lifesaver. ReadmeX generated a complete architecture guide for a legacy codebase in seconds. It perfectly explained the system.",
   },
   {
     name: "Emily Watson",
     rating: 5,
     review:
-      "The AI file summaries are incredibly accurate. It doesn't just skim the code; it tells you exactly what the file does in plain English. It's like having the original maintainer sitting right next to you explaining the files.",
+      "The generated documentation is incredible. It doesn't just list files; it actually understands and explains the system design in plain English.",
   },
   {
     name: "David Kumar",
     rating: 5,
     review:
-      "I use this daily for open-source work. Instead of spending hours opening a hundred different folders on GitHub, I get an immediate map of the project. It has significantly speed up my contribution speed.",
+      "I use this to document all my open-source projects. It saves me hours of writing and formatting markdown files.",
   },
   {
     name: "Sophia Rossi",
     rating: 4,
     review:
-      "Fantastic tool for exploring new frameworks. The interactive tree explorer helped me understand how core modules interact without me having to clone the whole project and grep everything locally.",
+      "Fantastic tool. It gave me a clear system overview and extracted the exact tech stack without me having to write a single word.",
   },
   {
     name: "James Thompson",
     rating: 5,
     review:
-      "Absolutely game-changing for technical leads. I use it to audit external libraries before we add them to our monorepo. The instant file breakdowns give us total code clarity with zero setup overhead.",
+      "Absolutely game-changing. We use it to automatically generate high-level documentation for every new module in our monorepo.",
   },
   {
     name: "Olivia Zhang",
     rating: 4,
     review:
-      "Simple, effective, and fast. It completely takes the guesswork out of complex, messy GitHub repos. Getting a clear view of an entire folder structure with working summaries is a massive time-saver.",
+      "Simple, effective, and fast. It takes messy, undocumented code and turns it into beautiful, structured documentation instantly.",
   },
   {
     name: "William Smith",
     rating: 5,
     review:
-      "SummaryX is now a permanent part of my developer workflow. If you deal with large or unfamiliar codebases frequently, this isn't just a luxury—it's a necessity for maintaining your sanity and development speed.",
+      "ReadmeX is now a permanent part of my workflow. Writing docs used to be a chore, but now it is done with one click.",
   },
   {
     name: "Mia Lindholm",
     rating: 5,
     review:
-      "I've tried other repository analysis tools, but they usually just generate a giant, unreadable graph diagram. SummaryX actually gives me clean, readable, and logical summaries of what each file is doing.",
+      "Other tools just give you a giant, unreadable graph diagram. ReadmeX actually gives you clean, readable, and professional markdown.",
   },
   {
     name: "Henry Fletcher",
     rating: 5,
     review:
-      "This has completely transformed how our team handles technical alignment. We drop the repository link into SummaryX first to give everyone an instant high-level map of the codebase architecture before writing code.",
+      "This transformed our team. We drop a link into ReadmeX to instantly generate a high-level map of the codebase before writing new features.",
   },
 ];
 
 export const FAQ = [
   {
     id: "item-1",
-    question: "How does SummaryX work?",
+    question: "How does ReadmeX work?",
     answer:
-      "Just paste a GitHub link. Our AI automatically scans the project, figures out how everything connects, and instantly builds a clean, interactive map with simple summaries for every single file.",
+      "Just paste a GitHub link. Our AI groups your code into logical modules, understands the architecture, and writes a complete README file for you.",
   },
   {
     id: "item-2",
     question: "Do I need to download or clone anything?",
     answer:
-      "Not at all! SummaryX runs entirely in your browser. You don't have to download heavy folders or touch your computer's terminal. Paste the link, and we handle the rest in seconds.",
+      "Not at all! ReadmeX runs entirely in your browser. You don't have to download heavy folders. Paste the link, and we handle the rest.",
   },
   {
     id: "item-3",
@@ -101,31 +102,31 @@ export const FAQ = [
     id: "item-4",
     question: "What programming languages do you support?",
     answer:
-      "We support almost all popular languages, including JavaScript, TypeScript, Python, Rust, Go, and Java. Plus, we add support for more language setups every single month.",
+      "We support almost all popular languages, including JavaScript, TypeScript, Python, Rust, Go, and Java.",
   },
   {
     id: "item-5",
     question: "Can it handle massive or messy codebases?",
     answer:
-      "Yes! SummaryX is built for messy code. Whether it's a tiny weekend hobby app or a giant corporate system, we break the files down into simple, bite-sized summaries so you don't get overwhelmed.",
+      "Yes! ReadmeX is built for that. We smartly group related files together so the AI understands the broad architecture without getting overwhelmed by messy details.",
   },
   {
     id: "item-6",
     question: "Can I use it on private repositories?",
     answer:
-      "Right now, SummaryX works with any public GitHub repository. Private repository support is our top priority and is launching very soon so you can map your private team projects.",
+      "Right now, ReadmeX works with public GitHub repositories. Private repository support is our top priority and is launching very soon.",
   },
   {
     id: "item-7",
-    question: "Are the AI summaries actually accurate?",
+    question: "Are the generated READMEs actually accurate?",
     answer:
-      "Yes. Our AI doesn't just look at a single file in a vacuum. It reads how files talk to each other across the entire codebase, giving you smart summaries that explain what the code actually does in plain English.",
+      "Yes. Our AI looks at how files and folders talk to each other across the entire codebase to write an accurate, high-level system overview.",
   },
   {
     id: "item-8",
-    question: "Who is SummaryX built for?",
+    question: "Who is ReadmeX built for?",
     answer:
-      "It's perfect for developers onboarding to a new job, open-source contributors trying to make a quick fix, or tech leads auditing a new library before adding it to their system.",
+      "It is perfect for developers who hate writing documentation, open-source maintainers, or tech leads who need quick architecture guides for legacy projects.",
   },
 ];
 
