@@ -1,25 +1,25 @@
 import { SiteConfig } from "@/types/site";
 
 export const siteConfig: SiteConfig = {
-  name: "SummaryX",
+  name: "ReadmeX",
   description:
-    "Instantly turn any messy GitHub repository into a clean, interactive map with clear, AI-powered summaries for every single file.",
-  url: "https://summaryx.vercel.app",
+    "Instantly generate production-ready READMEs and high-level architectural documentation for any GitHub repository using AI.",
+  url: "https://readmex.vercel.app",
   keywords: [
-    "SummaryX",
-    "Codebase Map",
-    "AI Code Summaries",
-    "GitHub Repository Explorer",
-    "Interactive File Tree",
-    "Code Analytics",
+    "ReadmeX",
+    "Automated README",
+    "AI Documentation",
+    "Architecture Mapping",
+    "GitHub Repository Analyzer",
+    "Codebase Documentation",
     "Developer Tools",
-    "Fast Code Comprehension",
+    "Fast System Comprehension",
     "Next.js 15 App Router",
     "Turborepo Monorepo",
   ],
   links: {
     twitter: "https://x.com/XSinghAstra",
     github: "https://github.com/SinghAstra",
-    githubRepo: "https://github.com/SinghAstra/SummaryX",
+    githubRepo: "https://github.com/SinghAstra/ReadmeX",
   },
 };
