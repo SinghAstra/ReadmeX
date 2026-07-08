@@ -20,8 +20,7 @@ model User {
 
     accounts     Account[]
     sessions     Session[]
-    todos        Todo[]
-    repositories Repository[] // 👈 User only tracks direct repository ownership
+    repositories Repository[] 
 }
 
 model Account {
@@ -68,15 +67,7 @@ model PasswordResetToken {
     @@unique([identifier, token])
 }
 
-model Todo {
-    id        String   @id @default(cuid())
-    title     String
-    completed Boolean  @default(false)
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+
 
 enum RepositoryStatus {
     PENDING
@@ -114,7 +105,8 @@ model Repository {
     createdAt      DateTime         @default(now())
     updatedAt      DateTime         @updatedAt
     files          RepositoryFile[]
-    jobs           Job[]            
+    jobs           Job[]      
+    moduleSummaries ModuleSummary[]      
 
     @@unique([userId, githubUrl])
     @@index([status])
@@ -172,5 +164,21 @@ enum JobStatus {
     COMPLETED
     FAILED
     CANCELLED
+}
+
+
+model ModuleSummary {
+   id           String     @id @default(uuid()) @db.Uuid
+    repositoryId  String    @db.Uuid
+    repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+    path         String     
+    summary      String     @db.Text
+    tokenCount   Int        @default(0) 
+
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    @@unique([repositoryId, path])
+    @@index([repositoryId])
 }
 

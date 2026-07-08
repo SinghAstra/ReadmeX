@@ -19,11 +19,12 @@ const CtaSection = () => {
       <LampBackground />
       <div className="flex flex-col items-center justify-center relative w-full text-center gap-6">
         <h2 className="text-center text-4xl md:text-7xl font-medium tracking-tight">
-          Stop wrestling with messy codebases.
+          Stop writing documentation by hand.
         </h2>
         <p className="text-muted-foreground text-lg tracking-normal leading-relaxed max-w-md mx-auto">
-          Paste your GitHub link and let SummaryX build a clean, interactive map
-          with clear AI summaries for every file. Start exploring faster today.
+          Paste your GitHub link and let ReadmeX generate a production ready
+          README with a complete architectural breakdown. Get your docs done
+          today.
         </p>
         <div>
           <Link href={ROUTES.SIGN_UP}>
