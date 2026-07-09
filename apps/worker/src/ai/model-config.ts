@@ -2,6 +2,7 @@ export const MODEL_CONFIG = {
   activeModel: "llama-3.1-8b-instant",
   temperature: 0.1,
   maxInputTokens: 3000,
+  minInputTokens: 500,
 } as const;
 
 export function estimateTokenCount(text: string): number {
