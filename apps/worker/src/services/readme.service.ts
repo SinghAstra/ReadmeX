@@ -1,7 +1,8 @@
 import { prisma } from "@repo/db";
-import { FILE_SUMMARY_STATUS } from "@repo/shared";
-import { MODEL_CONFIG } from "../ai/model-config.js";
-import { chunkTreeIntoBuckets, FileNode } from "../utils/tree-chunker.js";
+import { FILE_SUMMARY_STATUS, JOB_NAMES } from "@repo/shared";
+import { readmeGenerationQueue } from "@repo/shared/server";
+import { MODEL_CONFIG } from "../ai/model-config";
+import { chunkTreeIntoBuckets, FileNode } from "../utils/tree-chunker";
 
 export async function prepareBuckets(repositoryId: string) {
   const dbFiles = await prisma.repositoryFile.findMany({
@@ -29,4 +30,14 @@ export async function prepareBuckets(repositoryId: string) {
   });
 
   return buckets;
+}
+
+export async function triggerReadmeGeneration(
+  repositoryId: string,
+  jobId: string
+) {
+  await readmeGenerationQueue.add(JOB_NAMES.GENERATE_README, {
+    repositoryId,
+    jobId,
+  });
 }
