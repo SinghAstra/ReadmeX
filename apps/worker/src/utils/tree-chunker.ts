@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 export interface FileNode {
   path: string;
   summary: string;
@@ -59,24 +62,98 @@ interface TraverseResult {
   unBucketedTokens: number;
 }
 
-export function traverse(node: TreeNode): TraverseResult {
-  if (node.type === "file") {
-    return {
-      unBucketedFiles: [
-        { path: node.path, summary: node.summary!, tokens: node.tokens },
-      ],
-      unBucketedTokens: node.tokens,
-    };
+export interface ChunkOptions {
+  minTokens: number;
+  maxTokens: number;
+}
+
+export function chunkTreeIntoBuckets(
+  files: FileNode[],
+  options: ChunkOptions
+): Bucket[] {
+  const rootNode = buildVirtualTree(files);
+  const finalBuckets: Bucket[] = [];
+
+  function traverse(node: TreeNode): TraverseResult {
+    if (node.type === "file") {
+      return {
+        unBucketedFiles: [
+          { path: node.path, summary: node.summary!, tokens: node.tokens },
+        ],
+        unBucketedTokens: node.tokens,
+      };
+    }
+
+    const unBucketedFiles: FileNode[] = [];
+    let unBucketedTokens = 0;
+
+    for (const childNode of node.children.values()) {
+      const result = traverse(childNode);
+      unBucketedFiles.push(...result.unBucketedFiles);
+      unBucketedTokens += result.unBucketedTokens;
+    }
+
+    if (unBucketedTokens < options.minTokens) {
+      return { unBucketedFiles, unBucketedTokens };
+    } else if (
+      unBucketedTokens >= options.minTokens &&
+      unBucketedTokens <= options.maxTokens
+    ) {
+      finalBuckets.push({
+        path: node.path,
+        tokenCount: unBucketedTokens,
+        files: unBucketedFiles,
+      });
+      return {
+        unBucketedFiles: [],
+        unBucketedTokens: 0,
+      };
+    } else {
+      let currentChunkFiles: FileNode[] = [];
+      let currentChunkTokens = 0;
+      let partNumber = 1;
+
+      for (let file of unBucketedFiles) {
+        if (currentChunkTokens + file.tokens > options.maxTokens) {
+          finalBuckets.push({
+            path: `${node.path} (Part ${partNumber})`,
+            tokenCount: currentChunkTokens,
+            files: currentChunkFiles,
+          });
+
+          currentChunkFiles = [];
+          currentChunkTokens = 0;
+          partNumber++;
+        }
+        currentChunkFiles.push(file);
+        currentChunkTokens = currentChunkTokens + file.tokens;
+      }
+      return {
+        unBucketedFiles: currentChunkFiles,
+        unBucketedTokens: currentChunkTokens,
+      };
+    }
   }
 
-  const unBucketedFiles: FileNode[] = [];
-  let unBucketedTokens = 0;
+  const finalResult = traverse(rootNode);
 
-  for (const childNode of node.children.values()) {
-    const result = traverse(childNode);
-    unBucketedFiles.push(...result.unBucketedFiles);
-    unBucketedTokens += result.unBucketedTokens;
+  if (finalResult.unBucketedFiles.length > 0) {
+    finalBuckets.push({
+      path: "Root Files",
+      tokenCount: finalResult.unBucketedTokens,
+      files: finalResult.unBucketedFiles,
+    });
   }
 
-  return { unBucketedFiles, unBucketedTokens };
+  const dataString = JSON.stringify(finalBuckets, null, 2);
+  const filePath = path.join(process.cwd(), "finalBuckets.json");
+
+  try {
+    fs.writeFileSync(filePath, dataString);
+    console.log(`Success! finalBuckets saved to: ${filePath}`);
+  } catch (error) {
+    console.error("Failed to write to file:", error);
+  }
+
+  return finalBuckets;
 }
