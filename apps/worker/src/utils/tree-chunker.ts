@@ -19,8 +19,8 @@ export interface TreeNode {
   children: Map<string, TreeNode>;
 }
 
-function buildVirtualTree(files: FileNode[]): TreeNode {
-  const virtualTree: TreeNode = {
+export function buildVirtualTree(files: FileNode[]): TreeNode {
+  const rootNode: TreeNode = {
     name: "root",
     path: "",
     type: "dir",
@@ -29,17 +29,17 @@ function buildVirtualTree(files: FileNode[]): TreeNode {
   };
 
   for (const file of files) {
-    const dirs = file.path.split("/");
-    let root = virtualTree;
+    const pathSegments = file.path.split("/");
+    let currentNode = rootNode;
 
-    for (let i = 0; i < dirs.length; i++) {
-      const part = dirs[i];
-      const isFile = i === dirs.length - 1;
+    for (let i = 0; i < pathSegments.length; i++) {
+      const segment = pathSegments[i];
+      const isFile = i === pathSegments.length - 1;
 
-      if (!root.children.has(part)) {
-        root.children.set(part, {
-          name: part,
-          path: dirs.slice(0, i + 1).join("/"),
+      if (!currentNode.children.has(segment)) {
+        currentNode.children.set(segment, {
+          name: segment,
+          path: pathSegments.slice(0, i + 1).join("/"),
           type: isFile ? "file" : "dir",
           tokens: isFile ? file.tokens : 0,
           summary: isFile ? file.summary : undefined,
@@ -47,9 +47,36 @@ function buildVirtualTree(files: FileNode[]): TreeNode {
         });
       }
 
-      root = root.children.get(part)!;
+      currentNode = currentNode.children.get(segment)!;
     }
   }
 
-  return virtualTree;
+  return rootNode;
+}
+
+interface TraverseResult {
+  unBucketedFiles: FileNode[];
+  unBucketedTokens: number;
+}
+
+export function traverse(node: TreeNode): TraverseResult {
+  if (node.type === "file") {
+    return {
+      unBucketedFiles: [
+        { path: node.path, summary: node.summary!, tokens: node.tokens },
+      ],
+      unBucketedTokens: node.tokens,
+    };
+  }
+
+  const unBucketedFiles: FileNode[] = [];
+  let unBucketedTokens = 0;
+
+  for (const childNode of node.children.values()) {
+    const result = traverse(childNode);
+    unBucketedFiles.push(...result.unBucketedFiles);
+    unBucketedTokens += result.unBucketedTokens;
+  }
+
+  return { unBucketedFiles, unBucketedTokens };
 }
