@@ -126,6 +126,8 @@ model RepositoryFile {
     lastError     String?           @db.Text
     completedAt   DateTime?
     createdAt     DateTime          @default(now())
+    moduleSummaryId String?     @db.Uuid
+    moduleSummary   ModuleSummary? @relation(fields: [moduleSummaryId], references: [id])
 
     @@unique([repositoryId, relativePath])
     @@index([summaryStatus])
@@ -168,7 +170,7 @@ enum JobStatus {
 
 
 model ModuleSummary {
-   id           String     @id @default(uuid()) @db.Uuid
+    id           String     @id @default(uuid()) @db.Uuid
     repositoryId  String    @db.Uuid
     repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
     path         String     
@@ -177,6 +179,7 @@ model ModuleSummary {
 
     createdAt    DateTime   @default(now())
     updatedAt    DateTime   @updatedAt
+    files        RepositoryFile[]
 
     @@unique([repositoryId, path])
     @@index([repositoryId])

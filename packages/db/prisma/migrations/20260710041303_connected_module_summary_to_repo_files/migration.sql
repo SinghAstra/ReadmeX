@@ -99,6 +99,7 @@ CREATE TABLE "RepositoryFile" (
     "lastError" TEXT,
     "completedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "moduleSummaryId" UUID,
 
     CONSTRAINT "RepositoryFile_pkey" PRIMARY KEY ("id")
 );
@@ -196,6 +197,9 @@ ALTER TABLE "Repository" ADD CONSTRAINT "Repository_userId_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "RepositoryFile" ADD CONSTRAINT "RepositoryFile_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RepositoryFile" ADD CONSTRAINT "RepositoryFile_moduleSummaryId_fkey" FOREIGN KEY ("moduleSummaryId") REFERENCES "ModuleSummary"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "jobs" ADD CONSTRAINT "jobs_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE CASCADE ON UPDATE CASCADE;
