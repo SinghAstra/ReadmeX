@@ -47,9 +47,6 @@ export function useJobLiveStream(
 
             void Promise.all([
               queryClient.invalidateQueries({
-                queryKey: repoKeys.files(repositoryId),
-              }),
-              queryClient.invalidateQueries({
                 queryKey: repoKeys.detail(repositoryId),
               }),
               queryClient.invalidateQueries({

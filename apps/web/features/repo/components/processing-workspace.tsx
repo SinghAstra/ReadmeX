@@ -82,7 +82,6 @@ export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
     if (isTerminalState) {
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: repoKeys.detail(repo.id) }),
-        queryClient.invalidateQueries({ queryKey: repoKeys.files(repo.id) }),
         queryClient.invalidateQueries({ queryKey: repoKeys.lists() }),
       ]);
     }
