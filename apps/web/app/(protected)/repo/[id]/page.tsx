@@ -1,6 +1,5 @@
 import { RepoWorkspaceShell } from "@/features/repo/components/repo-workspace-shell";
 import { repoQueryFn } from "@/features/repo/hooks/use-repo";
-import { repoFilesQueryFn } from "@/features/repo/hooks/use-repo-files";
 import { repoKeys } from "@/features/repo/query-keys";
 import { GetRepositoryResponse, REPOSITORY_STATUS } from "@repo/shared";
 import {
@@ -12,9 +11,9 @@ import { type Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Repository Workspace - SummaryX",
+  title: "Repository Workspace",
   description:
-    "Interactive directory mapping and live AI summary generation workspace.",
+    "Explore your project structure and watch ReadmeX generate your perfect README in real-time.",
 };
 
 interface RepositoryPageProps {
@@ -29,17 +28,6 @@ export default async function RepositoryPage({ params }: RepositoryPageProps) {
     queryKey: repoKeys.detail(id),
     queryFn: () => repoQueryFn(id),
   });
-
-  const repo = queryClient.getQueryData<GetRepositoryResponse>(
-    repoKeys.detail(id)
-  );
-
-  if (repo?.status === REPOSITORY_STATUS.COMPLETED) {
-    await queryClient.prefetchQuery({
-      queryKey: repoKeys.files(id),
-      queryFn: () => repoFilesQueryFn(id),
-    });
-  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -17,7 +17,6 @@ import { STATUS_BORDER_MAP } from "@/lib/constants";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import {
-  ChevronsUpDown,
   Copy,
   Disc3,
   ExternalLink,
@@ -35,16 +34,10 @@ import { useRepository } from "../hooks/use-repo";
 import { useResyncRepository } from "../hooks/use-resync-repo";
 
 interface RepoHeaderProps {
-  isExpandedAll: boolean;
-  onToggleExpandAll: () => void;
-  onCopySummaryAll: () => void;
+  onCopyReadme: () => void;
 }
 
-export function RepoHeader({
-  isExpandedAll,
-  onToggleExpandAll,
-  onCopySummaryAll,
-}: RepoHeaderProps) {
+export function RepoHeader({ onCopyReadme }: RepoHeaderProps) {
   const { toggleSidebar } = useSidebar();
   const { data: session } = useSession();
   const params = useParams();
@@ -114,7 +107,6 @@ export function RepoHeader({
                     </AvatarFallback>
                   </Avatar>
 
-                  {/* Truncated text wrapper */}
                   <span className="font-mono text-xs sm:text-sm tracking-tight text-foreground truncate block">
                     {repository.owner} / {repository.name}
                   </span>
@@ -164,36 +156,12 @@ export function RepoHeader({
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={onCopySummaryAll}
+                onClick={onCopyReadme}
                 title="Copy All Summaries"
                 aria-label="Copy All Summaries"
                 className="rounded-full text-muted-foreground hover:text-foreground border bg-card/50 hover:bg-card/70 size-7 sm:size-8 disabled:opacity-40"
               >
                 <Copy className="size-3.5" />
-              </Button>
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={onToggleExpandAll}
-                aria-label={
-                  isExpandedAll
-                    ? "Collapse all folders and summaries"
-                    : "Expand all folders and summaries"
-                }
-                title={isExpandedAll ? "Collapse All" : "Expand All"}
-                className={cn(
-                  "rounded-full text-muted-foreground hover:text-foreground transition-colors border bg-card/50 hover:bg-card/70 size-7 sm:size-8 disabled:opacity-40",
-                  isExpandedAll && "bg-secondary text-primary border-primary/20"
-                )}
-              >
-                <ChevronsUpDown
-                  className={cn(
-                    "size-3.5 transition-transform duration-200",
-                    isExpandedAll && "rotate-180 text-primary"
-                  )}
-                />
               </Button>
             </div>
           )}
