@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export interface FileNode {
+  id: string;
   path: string;
   summary: string;
   tokens: number;
@@ -14,6 +15,7 @@ export interface Bucket {
 }
 
 export interface TreeNode {
+  id?: string;
   name: string;
   path: string;
   type: "file" | "dir";
@@ -78,7 +80,12 @@ export function chunkTreeIntoBuckets(
     if (node.type === "file") {
       return {
         unBucketedFiles: [
-          { path: node.path, summary: node.summary!, tokens: node.tokens },
+          {
+            id: node.id!,
+            path: node.path,
+            summary: node.summary!,
+            tokens: node.tokens,
+          },
         ],
         unBucketedTokens: node.tokens,
       };
