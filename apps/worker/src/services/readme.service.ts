@@ -3,9 +3,10 @@ import {
   FILE_SUMMARY_STATUS,
   JOB_NAMES,
   JOB_STATUS,
+  logError,
   REPOSITORY_STATUS,
 } from "@repo/shared";
-import { readmeGenerationQueue } from "@repo/shared/server";
+import { readmeGenerationQueue, trackProgress } from "@repo/shared/server";
 import { MODEL_CONFIG } from "../ai/model-config";
 import { executeAIRequest } from "../ai/request-manager";
 import { SYSTEM_PROMPT } from "../prompt";
@@ -50,81 +51,127 @@ export const readmeService = {
   },
 
   async processReadmeGeneration(repositoryId: string, jobId: string) {
-    const buckets = await readmeService.prepareBuckets(repositoryId);
-    let runId = 0;
+    try {
+      const buckets = await readmeService.prepareBuckets(repositoryId);
+      let runId = 0;
 
-    for (const bucket of buckets) {
-      const fileData = bucket.files
-        .map((f) => `File: ${f.path}\nSummary: ${f.summary}`)
+      await trackProgress({
+        jobId,
+        repositoryId,
+        status: JOB_STATUS.RUNNING,
+        message: `Grouping your project files... (${buckets.length} folders found)`,
+      });
+
+      for (const bucket of buckets) {
+        const fileData = bucket.files
+          .map((f) => `File: ${f.path}\nSummary: ${f.summary}`)
+          .join("\n\n");
+        const userPayload = `Directory: ${bucket.path}\n\nFiles:\n${fileData}`;
+
+        const aiResponse = await executeAIRequest(runId, {
+          model: MODEL_CONFIG.activeModel,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT.MODULE_SUMMARY },
+            {
+              role: "user",
+              content: userPayload,
+            },
+          ],
+        });
+
+        const moduleSummary =
+          aiResponse?.choices[0]?.message?.content?.trim() ||
+          "No Module summary written.";
+
+        await prisma.moduleSummary.create({
+          data: {
+            summary: moduleSummary,
+            path: bucket.path,
+            repositoryId,
+            files: {
+              connect: bucket.files.map((f) => ({ id: f.id })),
+            },
+          },
+        });
+        runId++;
+
+        await trackProgress({
+          jobId,
+          repositoryId,
+          status: JOB_STATUS.RUNNING,
+          message: `Reading folder: ${bucket.path} (${runId}/${buckets.length})`,
+        });
+      }
+
+      const moduleSummaries = await prisma.moduleSummary.findMany({
+        where: { repositoryId },
+        orderBy: { path: "asc" },
+      });
+
+      const finalPayload = moduleSummaries
+        .map((ms) => `### ${ms.path}\n${ms.summary}`)
         .join("\n\n");
-      const userPayload = `Directory: ${bucket.path}\n\nFiles:\n${fileData}`;
+
+      await trackProgress({
+        jobId,
+        repositoryId,
+        status: JOB_STATUS.RUNNING,
+        message: "Putting it all together into your final README...",
+      });
 
       const aiResponse = await executeAIRequest(runId, {
         model: MODEL_CONFIG.activeModel,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT.MODULE_SUMMARY },
+          { role: "system", content: SYSTEM_PROMPT.MASTER_README },
           {
             role: "user",
-            content: userPayload,
+            content: finalPayload,
           },
         ],
       });
 
-      const moduleSummary =
+      const finalReadmeText =
         aiResponse?.choices[0]?.message?.content?.trim() ||
-        "No Module summary written.";
+        "Failed to generate README.";
 
-      await prisma.moduleSummary.create({
+      await prisma.repository.update({
+        where: { id: repositoryId },
         data: {
-          summary: moduleSummary,
-          path: bucket.path,
-          repositoryId,
-          files: {
-            connect: bucket.files.map((f) => ({ id: f.id })),
-          },
+          readme: finalReadmeText,
+          status: REPOSITORY_STATUS.COMPLETED,
         },
       });
-      runId++;
-    }
 
-    const moduleSummaries = await prisma.moduleSummary.findMany({
-      where: { repositoryId },
-      orderBy: { path: "asc" },
-    });
-
-    const finalPayload = moduleSummaries
-      .map((ms) => `### ${ms.path}\n${ms.summary}`)
-      .join("\n\n");
-
-    const aiResponse = await executeAIRequest(runId, {
-      model: MODEL_CONFIG.activeModel,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT.MASTER_README },
-        {
-          role: "user",
-          content: finalPayload,
+      await prisma.job.update({
+        where: { id: jobId },
+        data: {
+          status: JOB_STATUS.COMPLETED,
+          completedAt: new Date(),
         },
-      ],
-    });
+      });
 
-    const finalReadmeText =
-      aiResponse?.choices[0]?.message?.content?.trim() ||
-      "Failed to generate README.";
-
-    await prisma.repository.update({
-      where: { id: repositoryId },
-      data: {
-        readme: finalReadmeText,
-        status: REPOSITORY_STATUS.COMPLETED,
-      },
-    });
-
-    await prisma.job.update({
-      where: { id: jobId },
-      data: {
+      await trackProgress({
+        jobId,
+        repositoryId,
         status: JOB_STATUS.COMPLETED,
-        completedAt: new Date(),
-      },
-    });
+        message: "All done! Your README is ready.",
+      });
+    } catch (error) {
+      logError(error);
+
+      await trackProgress({
+        jobId,
+        repositoryId,
+        status: JOB_STATUS.FAILED,
+        message: "Oops! Something went wrong while writing the README.",
+      });
+
+      await prisma.job.update({
+        where: { id: jobId },
+        data: { status: JOB_STATUS.FAILED },
+      });
+
+      throw error;
+    }
   },
 };
