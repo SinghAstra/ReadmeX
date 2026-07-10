@@ -7,6 +7,8 @@ import {
   REPOSITORY_STATUS,
 } from "@repo/shared";
 import { readmeGenerationQueue, trackProgress } from "@repo/shared/server";
+import fs from "fs";
+import path from "path";
 import { MODEL_CONFIG } from "../ai/model-config";
 import { executeAIRequest } from "../ai/request-manager";
 import { SYSTEM_PROMPT } from "../prompt";
@@ -133,6 +135,16 @@ export const readmeService = {
       const finalReadmeText =
         aiResponse?.choices[0]?.message?.content?.trim() ||
         "Failed to generate README.";
+
+      const dataString = JSON.stringify(finalReadmeText, null, 2);
+      const filePath = path.join(process.cwd(), "readme.md");
+
+      try {
+        fs.writeFileSync(filePath, dataString);
+        console.log(`Success! Readme saved to: ${filePath}`);
+      } catch (error) {
+        console.error("Failed to write to file:", error);
+      }
 
       await prisma.repository.update({
         where: { id: repositoryId },
