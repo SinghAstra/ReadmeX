@@ -1,9 +1,14 @@
 import { prisma } from "@repo/db";
-import { FILE_SUMMARY_STATUS, JOB_NAMES } from "@repo/shared";
+import {
+  FILE_SUMMARY_STATUS,
+  JOB_NAMES,
+  JOB_STATUS,
+  REPOSITORY_STATUS,
+} from "@repo/shared";
 import { readmeGenerationQueue } from "@repo/shared/server";
 import { MODEL_CONFIG } from "../ai/model-config";
 import { executeAIRequest } from "../ai/request-manager";
-import { MODULE_SUMMARY_SYSTEM_PROMPT } from "../prompt";
+import { SYSTEM_PROMPT } from "../prompt";
 import { chunkTreeIntoBuckets, FileNode } from "../utils/tree-chunker";
 
 export const readmeService = {
@@ -54,11 +59,10 @@ export const readmeService = {
         .join("\n\n");
       const userPayload = `Directory: ${bucket.path}\n\nFiles:\n${fileData}`;
 
-      // We also have to provide runId here can it simply be index increased by 1
       const aiResponse = await executeAIRequest(runId, {
         model: MODEL_CONFIG.activeModel,
         messages: [
-          { role: "system", content: MODULE_SUMMARY_SYSTEM_PROMPT },
+          { role: "system", content: SYSTEM_PROMPT.MODULE_SUMMARY },
           {
             role: "user",
             content: userPayload,
@@ -83,7 +87,44 @@ export const readmeService = {
       runId++;
     }
 
-    console.log(`Starting REDUCE phase...`);
-    // TODO: Synthesize final README
+    const moduleSummaries = await prisma.moduleSummary.findMany({
+      where: { repositoryId },
+      orderBy: { path: "asc" },
+    });
+
+    const finalPayload = moduleSummaries
+      .map((ms) => `### ${ms.path}\n${ms.summary}`)
+      .join("\n\n");
+
+    const aiResponse = await executeAIRequest(runId, {
+      model: MODEL_CONFIG.activeModel,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT.MASTER_README },
+        {
+          role: "user",
+          content: finalPayload,
+        },
+      ],
+    });
+
+    const finalReadmeText =
+      aiResponse?.choices[0]?.message?.content?.trim() ||
+      "Failed to generate README.";
+
+    await prisma.repository.update({
+      where: { id: repositoryId },
+      data: {
+        readme: finalReadmeText,
+        status: REPOSITORY_STATUS.COMPLETED,
+      },
+    });
+
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status: JOB_STATUS.COMPLETED,
+        completedAt: new Date(),
+      },
+    });
   },
 };
