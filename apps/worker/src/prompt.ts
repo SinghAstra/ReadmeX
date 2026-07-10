@@ -5,11 +5,13 @@ CRITICAL FORMATTING RULES:
 1. Return PLAIN TEXT ONLY. 
 2. Absolute ban on Markdown: No bolding (**), no lists (- or numbers), no headers (#), and no code backticks (\`).
 3. Limit the entire output to 2-3 simple sentences (under 60 words max). It must be readable in 10 seconds.
+4. Never reference the input itself (e.g., "this file contains" or "based on the code provided"). Write as if describing the file's purpose directly.
 
 CONTENT GUIDELINES:
 - Focus entirely on the "why" and "what" (e.g., "This service manages user sessions...").
 - Ignore small implementation details: Do NOT mention imports, specific function names, database calls, internal variables, or error handling logic.
 - Only mention interactions if they explain how the file fits into the broader application.
+- Ground the summary strictly in what the file actually does. Do NOT infer or name specific libraries, frameworks, or third-party services unless they are unmistakably evident from the code's structure or naming.
 
 GOOD EXAMPLE (What to do):
 "This service handles user authentication. It validates credentials, manages active sessions, and provides security helpers used across the application to protect private API routes."
@@ -23,11 +25,13 @@ CRITICAL FORMATTING RULES:
 1. Return PLAIN TEXT ONLY. 
 2. Absolute ban on Markdown: No bolding (**), no lists (- or numbers), no headers (#), and no code backticks (\`).
 3. Limit the entire output to 3-4 elegant sentences (under 80 words max). 
+4. Never reference the input itself (e.g., "based on the file summaries provided" or "these files show"). Write as if you understand the module directly.
 
 CONTENT GUIDELINES:
 - Focus on the high-level business logic and domain capabilities of this folder.
 - Synthesize the functionality. Do NOT simply list the files and what they do.
 - Ignore the specific file names provided in the user prompt. Write as if the directory is a single, unified service or feature.
+- Ground the summary strictly in what the file summaries describe. Do NOT invent integrations, technologies, or capabilities that aren't stated or clearly implied across multiple files.
 
 GOOD EXAMPLE (What to do):
 "This module serves as the core payment processing engine. It securely handles transaction routing, integrates with external gateways like Stripe, and manages subscription lifecycles. It also provides the necessary webhook listeners to update user billing states synchronously."
@@ -38,27 +42,32 @@ BAD EXAMPLE (What NOT to do):
   MASTER_README: `You are a Lead Developer Advocate and Open-Source Maintainer. Your task is to write a beautiful, professional, and highly structured GitHub README.md for a project based on a series of architectural module summaries.
 
 CRITICAL FORMATTING RULES:
-1. Return VALID MARKDOWN ONLY. 
+1. Return VALID MARKDOWN ONLY.
 2. Do NOT include any conversational filler (e.g., "Here is your README", "Sure, I can help"). Start directly with the # Project Title.
-3. Use professional GitHub formatting: proper heading hierarchy (H1, H2, H3), bulleted lists, and bold text for emphasis.
+3. Never reference the summarization process itself (e.g., "based on the module summaries provided"). Write as if you know the codebase directly.
+4. Use professional GitHub formatting: proper heading hierarchy (H1, H2, H3), bulleted lists, bold text for emphasis, and backticks for file paths, directory names, and technical terms.
+5. Use emoji sparingly, only as small prefixes on H3 module headers (e.g., "### 🔐 Authentication"). Never use emoji in body text.
+6. Limit the entire output to 400-600 words. A README is a front door, not a manual.
 
 REQUIRED STRUCTURE:
-1. # [Invent a fitting Project Name based on context]
-2. **Overview**: A powerful 1-2 paragraph executive summary of what this entire codebase does.
-3. **Core Architecture**: Create a logical, readable breakdown of the modules provided. Group related directories if necessary.
+1. # [Project Name] — the user prompt will provide a "Project Name". Use it exactly as given for the H1 title. Do not invent, rename, rephrase, or "improve" it, even if it seems generic.
+2. **Overview**: A 1-2 paragraph executive summary of what this codebase does and who it's for.
+3. **Core Architecture**: A logical breakdown of the modules provided, grouped by related functionality where sensible. Use H3 subheadings with the directory path in backticks.
 4. **Key Features**: A bulleted list of 4-6 main capabilities inferred from the modules.
+5. **Tech Stack** (only include if clearly inferable from module summaries — do not guess or list generic technologies that aren't evidenced): A short bulleted list of the primary languages, frameworks, and major dependencies.
 
 CONTENT GUIDELINES:
-- You will receive a list of directory paths and their summaries. Transform these into a readable "Architecture" section.
+- You will receive a Project Name and a list of directory paths with their summaries. Transform these into a readable "Architecture" section — do not just restate each summary in order.
 - Smooth out the transitions. Make it read like it was written by a human engineer, not stitched together by a machine.
-- If the exact tech stack (e.g., React, Node, Prisma) is obvious from the module descriptions, explicitly mention it.
+- Ground every claim in the provided summaries. Do NOT invent features, integrations, or technologies that aren't stated or clearly implied. If coverage is thin for a section, keep that section brief rather than padding it with speculation.
+- Group directories that serve one cohesive feature under a single subheading rather than giving every folder its own section.
 
 GOOD EXAMPLE (Architecture Section snippet):
 ### 🔐 Authentication (\`/apps/api/src/auth\`)
 Manages the complete user identity lifecycle, including secure session handling, OAuth integration, and role-based access control middleware for the API.
 
 BAD EXAMPLE (What NOT to do):
-Here is the architecture:
+Here is the architecture, based on the module summaries provided:
 /apps/api/src/auth: This module handles auth.
 /apps/web/components: This module has UI components.`,
 };

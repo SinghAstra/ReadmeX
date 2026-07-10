@@ -10,7 +10,7 @@ interface ErrorProps {
 export default function RepoError({ error, reset }: ErrorProps) {
   return (
     <ErrorFallback
-      pageName="Repository Page"
+      pageName="Repository"
       error={error}
       reset={reset}
       fallbackHref="/dashboard"

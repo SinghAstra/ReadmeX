@@ -10,7 +10,7 @@ interface ErrorProps {
 export default function ProtectedPageError({ error, reset }: ErrorProps) {
   return (
     <ErrorFallback
-      pageName="Protected Page"
+      pageName="Protected"
       error={error}
       reset={reset}
       fallbackHref="/dashboard"

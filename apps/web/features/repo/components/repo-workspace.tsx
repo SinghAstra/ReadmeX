@@ -1,21 +1,31 @@
 "use client";
 
 import { RepoHeader } from "@/features/repo/components/repo-header";
+import { MarkdownRenderer } from "./markdown-renderer";
 
 interface RepositoryWorkspaceProps {
   repo: {
     id: string;
+    readme: string | null;
   };
 }
 
 export function RepositoryWorkspace({ repo }: RepositoryWorkspaceProps) {
-  const handleCopyReadme = async () => {};
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden h-full w-full">
-      <RepoHeader onCopyReadme={handleCopyReadme} />
+      <RepoHeader textToCopy={repo.readme} />
 
-      <main className="flex-1 overflow-y-auto h-full p-1 md:p-2 lg:p-4 animate-in fade-in duration-300"></main>
+      <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        {repo.readme ? (
+          <div className="max-w-3xl mx-auto leading-[1.65rem] py-4 pl-6 md:py-6 md:pl-11 pr-16">
+            <MarkdownRenderer content={repo.readme} />
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-muted-foreground py-20 text-center">
+            <p>No README content was generated for this repository.</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

@@ -54,6 +54,10 @@ export const readmeService = {
 
   async processReadmeGeneration(repositoryId: string, jobId: string) {
     try {
+      await prisma.moduleSummary.deleteMany({
+        where: { repositoryId: repositoryId },
+      });
+
       const repo = await prisma.repository.findUnique({
         where: { id: repositoryId },
         select: { name: true },
