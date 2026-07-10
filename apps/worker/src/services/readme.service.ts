@@ -31,7 +31,7 @@ export const readmeService = {
     const mappedFiles: FileNode[] = dbFiles.map((file) => {
       return {
         id: file.id,
-        path: file.relativePath,
+        path: file.relativePath.replace(/\\/g, "/"),
         summary: file.summary!,
         tokens: Math.ceil(file.summary ? file.summary.length / 4 : 0),
       };
@@ -54,6 +54,11 @@ export const readmeService = {
 
   async processReadmeGeneration(repositoryId: string, jobId: string) {
     try {
+      const repo = await prisma.repository.findUnique({
+        where: { id: repositoryId },
+        select: { name: true },
+      });
+
       const buckets = await readmeService.prepareBuckets(repositoryId);
       let runId = 0;
 
@@ -127,7 +132,9 @@ export const readmeService = {
           { role: "system", content: SYSTEM_PROMPT.MASTER_README },
           {
             role: "user",
-            content: finalPayload,
+            content: `Project Name: ${
+              repo?.name || "My Project"
+            }\n\n${finalPayload}`,
           },
         ],
       });
@@ -135,16 +142,6 @@ export const readmeService = {
       const finalReadmeText =
         aiResponse?.choices[0]?.message?.content?.trim() ||
         "Failed to generate README.";
-
-      const dataString = JSON.stringify(finalReadmeText, null, 2);
-      const filePath = path.join(process.cwd(), "readme.md");
-
-      try {
-        fs.writeFileSync(filePath, dataString);
-        console.log(`Success! Readme saved to: ${filePath}`);
-      } catch (error) {
-        console.error("Failed to write to file:", error);
-      }
 
       await prisma.repository.update({
         where: { id: repositoryId },

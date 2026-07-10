@@ -157,15 +157,5 @@ export function chunkTreeIntoBuckets(
     });
   }
 
-  const dataString = JSON.stringify(finalBuckets, null, 2);
-  const filePath = path.join(process.cwd(), "finalBuckets.json");
-
-  try {
-    fs.writeFileSync(filePath, dataString);
-    console.log(`Success! finalBuckets saved to: ${filePath}`);
-  } catch (error) {
-    console.error("Failed to write to file:", error);
-  }
-
   return finalBuckets;
 }
