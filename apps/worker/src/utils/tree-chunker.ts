@@ -49,6 +49,7 @@ export function buildVirtualTree(files: FileNode[]): TreeNode {
           tokens: isFile ? file.tokens : 0,
           summary: isFile ? file.summary : undefined,
           children: new Map<string, TreeNode>(),
+          id: isFile ? file.id : undefined,
         });
       }
 
@@ -106,8 +107,10 @@ export function chunkTreeIntoBuckets(
       unBucketedTokens >= options.minTokens &&
       unBucketedTokens <= options.maxTokens
     ) {
+      const displayPath = node.path === "" ? "Root Directory" : node.path;
+
       finalBuckets.push({
-        path: node.path,
+        path: displayPath,
         tokenCount: unBucketedTokens,
         files: unBucketedFiles,
       });
@@ -122,8 +125,10 @@ export function chunkTreeIntoBuckets(
 
       for (let file of unBucketedFiles) {
         if (currentChunkTokens + file.tokens > options.maxTokens) {
+          const displayPath = node.path === "" ? "Root Directory" : node.path;
+
           finalBuckets.push({
-            path: `${node.path} (Part ${partNumber})`,
+            path: `${displayPath} (Part ${partNumber})`,
             tokenCount: currentChunkTokens,
             files: currentChunkFiles,
           });
@@ -146,7 +151,7 @@ export function chunkTreeIntoBuckets(
 
   if (finalResult.unBucketedFiles.length > 0) {
     finalBuckets.push({
-      path: "Root Files",
+      path: "Root Directory (Final)",
       tokenCount: finalResult.unBucketedTokens,
       files: finalResult.unBucketedFiles,
     });

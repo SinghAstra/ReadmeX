@@ -16,10 +16,21 @@ export const fileSummarizationWorker = new Worker<FileSummarizationJobData>(
   },
   {
     connection: redisConnection,
-    concurrency: 30,
+    concurrency: 10,
   }
 );
 
 fileSummarizationWorker.on("failed", (job, error) => {
   logError(error);
+});
+
+fileSummarizationWorker.on("ready", () =>
+  console.log("fileSummarizationWorker ready")
+);
+fileSummarizationWorker.on("active", (job) =>
+  console.log("fileSummarizationWorker active", job.id)
+);
+fileSummarizationWorker.on("error", (err) => {
+  console.log("fileSummarizationWorker error");
+  logError(err);
 });

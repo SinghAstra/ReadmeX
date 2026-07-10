@@ -52,6 +52,8 @@ export const repositoryService = {
       },
     });
 
+    console.log("existingRepo is ", existingRepo);
+
     if (existingRepo) {
       return { repositoryId: existingRepo.id, isDuplicate: true };
     }
@@ -89,12 +91,16 @@ export const repositoryService = {
         },
       });
 
+      console.log("newRepo is ", newRepo);
+
       const job = await prisma.job.create({
         data: {
           repositoryId: newRepo.id,
           status: JOB_STATUS.PENDING,
         },
       });
+
+      console.log("job is ", job);
 
       await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
         jobId: job.id,

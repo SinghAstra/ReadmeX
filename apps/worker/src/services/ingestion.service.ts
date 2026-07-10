@@ -107,12 +107,15 @@ async function traverseDirectory(
 
 export const ingestionService = {
   async processRepositoryIngestion(jobId: string, isResync = false) {
+    console.log("In Ingestion Service");
+
     const job = await prisma.job.findUnique({ where: { id: jobId } });
     if (!job) return;
 
     const repo = await prisma.repository.findUnique({
       where: { id: job.repositoryId },
     });
+
     if (!repo) return;
 
     try {

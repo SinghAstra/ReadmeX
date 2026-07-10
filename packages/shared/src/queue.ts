@@ -34,3 +34,27 @@ export const readmeGenerationQueue = new Queue<ReadmeGenerationJobData>(
   QUEUE_NAMES.README_GENERATION,
   queueOptions
 );
+
+export async function deleteAllJobsInQueue(queue: Queue) {
+  try {
+    console.log(`⏸️ Pausing queue ${queue.name} for cleanup...`);
+    await queue.pause();
+    await queue.obliterate({ force: true });
+    await queue.resume();
+    console.log(`🧹 Successfully obliterated all jobs in queue: ${queue.name}`);
+  } catch (error) {
+    console.error(`🚨 Failed to clear queue ${queue.name}:`, error);
+  }
+}
+
+export async function wipeAllQueues() {
+  console.log("🔥 Initiating full queue wipe...");
+
+  await Promise.all([
+    deleteAllJobsInQueue(repositoryIngestionQueue),
+    deleteAllJobsInQueue(fileSummarizationQueue),
+    deleteAllJobsInQueue(readmeGenerationQueue),
+  ]);
+
+  console.log("✨ All queues have been completely cleared.");
+}
