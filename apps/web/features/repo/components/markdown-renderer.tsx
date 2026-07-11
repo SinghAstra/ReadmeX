@@ -26,32 +26,32 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         rehypePlugins={[rehypeHighlight]}
         components={{
           h1: ({ children }) => (
-            <h1 className="font-bold mt-3 -mb-1 text-[1.375rem] text-foreground">
+            <h1 className="font-bold mt-8 mb-3 text-[1.375rem] text-foreground first:mt-0">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="font-bold mt-3 -mb-1 text-[1.125rem] text-foreground">
+            <h2 className="font-bold mt-8 mb-3 text-[1.125rem] text-foreground first:mt-0 [&_code]:text-[0.7em] [&_code]:font-normal [&_code]:font-mono [&_code]:bg-muted/60 [&_code]:text-muted-foreground [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:align-middle [&_code]:mx-0.5">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="font-bold mt-2 -mb-1 text-base text-foreground">
+            <h3 className="font-semibold mt-8 mb-3 pt-6 border-t border-border text-base text-foreground first:mt-0 first:pt-0 first:border-t-0 [&_code]:text-[0.72em] [&_code]:font-normal [&_code]:font-mono [&_code]:bg-muted/60 [&_code]:text-muted-foreground [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:align-middle [&_code]:mx-0.5">
               {children}
             </h3>
           ),
           h4: ({ children }) => (
-            <h4 className="font-bold mt-2 -mb-1 text-base text-foreground">
+            <h4 className="font-semibold mt-5 mb-2 text-base text-foreground first:mt-0 [&_code]:text-[0.75em] [&_code]:font-normal [&_code]:font-mono [&_code]:bg-muted/60 [&_code]:text-muted-foreground [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:align-middle [&_code]:mx-0.5">
               {children}
             </h4>
           ),
           h5: ({ children }) => (
-            <h5 className="font-bold mt-2 -mb-1 text-sm text-foreground">
+            <h5 className="font-semibold mt-4 mb-2 text-sm text-foreground first:mt-0">
               {children}
             </h5>
           ),
           h6: ({ children }) => (
-            <h6 className="font-semibold mt-2 -mb-1 text-sm text-foreground">
+            <h6 className="font-semibold mt-4 mb-2 text-sm text-muted-foreground first:mt-0">
               {children}
             </h6>
           ),
@@ -79,7 +79,6 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             </strong>
           ),
 
-          // Inline code
           code: ({ children, className }) => {
             const isInline = !className;
             if (isInline) {
@@ -92,9 +91,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             return <code className={className}>{children}</code>;
           },
 
-          // Fenced code blocks (wraps <code>) — adds header + copy button
           pre: ({ children }) => {
-            // Pull the raw text + language out of the child <code> element
             const codeElement = React.isValidElement(children)
               ? (children as React.ReactElement<{
                   className?: string;
@@ -140,31 +137,31 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           },
 
           ul: ({ children }) => (
-            <ul className="in-[li]:mb-0 in-[li]:mt-1 in-[li]:gap-1 [&:not(:last-child)_ul]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3 text-foreground">
+            <ul className="in-[li]:mb-0 in-[li]:mt-1 in-[li]:gap-1 [&:not(:last-child)_ul]:pb-1 list-disc flex flex-col gap-2 pl-8 mb-4 text-foreground">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="in-[li]:mb-0 in-[li]:mt-1 in-[li]:gap-1 [&:not(:last-child)_ol]:pb-1 list-decimal flex flex-col gap-1 pl-8 mb-3 text-foreground">
+            <ol className="in-[li]:mb-0 in-[li]:mt-1 in-[li]:gap-1 [&:not(:last-child)_ol]:pb-1 list-decimal flex flex-col gap-2 pl-8 mb-4 text-foreground">
               {children}
             </ol>
           ),
           li: ({ children }) => (
-            <li className="whitespace-normal wrap-break-word pl-2">
+            <li className="whitespace-normal wrap-break-word pl-2 leading-[1.6rem]">
               {children}
             </li>
           ),
 
           blockquote: ({ children }) => (
-            <blockquote className="ml-2 border-l-4 border-border pl-4 text-muted-foreground">
+            <blockquote className="ml-2 border-l-4 border-border pl-4 text-muted-foreground my-3">
               {children}
             </blockquote>
           ),
 
-          hr: () => <hr className="border-t-0.5 my-3 mx-1.5 border-border" />,
+          hr: () => <hr className="border-t-0.5 my-4 mx-1.5 border-border" />,
 
           table: ({ children }) => (
-            <div className="overflow-x-auto w-full px-2 mb-6">
+            <div className="overflow-x-auto w-full px-2 mb-6 mt-2">
               <table className="min-w-full border-collapse text-sm leading-[1.7] whitespace-normal">
                 {children}
               </table>
