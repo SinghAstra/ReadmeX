@@ -92,7 +92,6 @@ model Repository {
     name           String
     owner          String
     avatar         String
-    diskPath       String
     status         RepositoryStatus @default(PENDING)
     readme         String?          @db.Text
 
@@ -134,7 +133,7 @@ model RepositoryFile {
 }
 
 model Job {
-    id           String      @id @default(uuid())
+    id           String    @id @default(uuid()) @db.Uuid
     repositoryId String      @db.Uuid 
     status       JobStatus   @default(PENDING)
     createdAt    DateTime    @default(now())
@@ -150,8 +149,8 @@ model Job {
 }
 
 model JobLog {
-    id        String   @id @default(uuid())
-    jobId     String
+    id           String    @id @default(uuid()) @db.Uuid
+    jobId     String  @db.Uuid
     job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
     message   String
     createdAt DateTime @default(now())

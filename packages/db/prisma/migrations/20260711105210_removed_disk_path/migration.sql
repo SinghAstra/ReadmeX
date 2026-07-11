@@ -71,7 +71,6 @@ CREATE TABLE "Repository" (
     "name" TEXT NOT NULL,
     "owner" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
-    "diskPath" TEXT NOT NULL,
     "status" "RepositoryStatus" NOT NULL DEFAULT 'PENDING',
     "readme" TEXT,
     "totalFiles" INTEGER NOT NULL DEFAULT 0,
@@ -106,7 +105,7 @@ CREATE TABLE "RepositoryFile" (
 
 -- CreateTable
 CREATE TABLE "jobs" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "repositoryId" UUID NOT NULL,
     "status" "JobStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -120,8 +119,8 @@ CREATE TABLE "jobs" (
 
 -- CreateTable
 CREATE TABLE "job_logs" (
-    "id" TEXT NOT NULL,
-    "jobId" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "jobId" UUID NOT NULL,
     "message" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
