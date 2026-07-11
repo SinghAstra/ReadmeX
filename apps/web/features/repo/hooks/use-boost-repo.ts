@@ -29,9 +29,6 @@ export function useBoostRepository(repositoryId: string) {
         queryClient.invalidateQueries({
           queryKey: repoKeys.detail(repositoryId),
         }),
-        queryClient.invalidateQueries({
-          queryKey: repoKeys.files(repositoryId),
-        }),
         queryClient.invalidateQueries({ queryKey: repoKeys.lists() }),
       ]);
     },
