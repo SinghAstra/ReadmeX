@@ -71,7 +71,6 @@ export function classifyFile(
   const normalizedPath = relativePath.toLowerCase().replace(/\\/g, "/");
   const normalizedName = fileName.toLowerCase();
 
-  // --- LAYER 1: Directory Filters ---
   if (
     IGNORED_DIRECTORIES.some(
       (dir) =>
@@ -87,12 +86,10 @@ export function classifyFile(
     };
   }
 
-  // --- LAYER 2: Filename Filters ---
   if (FILENAME_IGNORED.includes(normalizedName)) {
     return {
       category: "IGNORED",
       shouldSummarizeWithAI: false,
-      // 🟢 Fix 1: Friendly static summaries instead of tech jargon
       staticSummary: `Automated project manifest or metadata log (${fileName}) skipped to keep the workspace summary clear and concise.`,
     };
   }
@@ -105,7 +102,6 @@ export function classifyFile(
     };
   }
 
-  // --- LAYER 3: Path Pattern Filters ---
   if (PATH_TRANSLATIONS.some((pattern) => normalizedPath.includes(pattern))) {
     const localeMatch = fileName.match(/^([a-zA-Z]{2,3}([-_][a-zA-Z]{2,4})?)/);
     const localeName = localeMatch ? ` for the [${localeMatch[1]}] locale` : "";
@@ -125,7 +121,6 @@ export function classifyFile(
     };
   }
 
-  // --- LAYER 4: Content Heuristics ---
   if (normalizedName.endsWith(".json")) {
     const trimmed = content.trim();
     if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
@@ -144,7 +139,6 @@ export function classifyFile(
     }
   }
 
-  // --- LAYER 5: Fall through to standard source code context parsing ---
   return {
     category: "CODE",
     shouldSummarizeWithAI: true,
