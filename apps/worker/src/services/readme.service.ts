@@ -7,8 +7,6 @@ import {
   REPOSITORY_STATUS,
 } from "@repo/shared";
 import { readmeGenerationQueue, trackProgress } from "@repo/shared/server";
-import fs from "fs";
-import path from "path";
 import { MODEL_CONFIG } from "../ai/model-config";
 import { executeAIRequest } from "../ai/request-manager";
 import { SYSTEM_PROMPT } from "../prompt";
@@ -31,7 +29,7 @@ export const readmeService = {
     const mappedFiles: FileNode[] = dbFiles.map((file) => {
       return {
         id: file.id,
-        path: file.relativePath.replace(/\\/g, "/"),
+        path: file.relativePath,
         summary: file.summary!,
         tokens: Math.ceil(file.summary ? file.summary.length / 4 : 0),
       };
