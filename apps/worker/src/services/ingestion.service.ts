@@ -13,6 +13,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
+import { getWorkspacePath } from "../utils/workspace.js";
 import { readmeService } from "./readme.service.js";
 
 const execAsync = promisify(exec);
@@ -59,10 +60,6 @@ interface TraversalStats {
     size: number;
     hash: string;
   }>;
-}
-
-function getWorkspacePath(repositoryId: string) {
-  return path.join(os.tmpdir(), "summary-x", repositoryId);
 }
 
 async function traverseDirectory(

@@ -7,6 +7,7 @@ import { estimateTokenCount, MODEL_CONFIG } from "../ai/model-config.js";
 import { executeAIRequest } from "../ai/request-manager.js";
 import { SYSTEM_PROMPT } from "../prompt.js";
 import { classifyFile } from "../utils/file-classifier.js";
+import { getWorkspacePath } from "../utils/workspace.js";
 import { readmeService } from "./readme.service.js";
 
 export const summarizationService = {
@@ -37,8 +38,10 @@ export const summarizationService = {
       data: { summaryStatus: FILE_SUMMARY_STATUS.PROCESSING },
     });
 
+    const workspacePath = getWorkspacePath(repositoryId);
+
     try {
-      const absoluteFilePath = path.join(repo.diskPath, file.relativePath);
+      const absoluteFilePath = path.join(workspacePath, file.relativePath);
       const fileContent = await fs.readFile(absoluteFilePath, "utf8");
 
       const classification = classifyFile(
@@ -83,7 +86,7 @@ export const summarizationService = {
         },
       });
 
-      await updateGlobalProgress(repositoryId, jobId, repo.diskPath);
+      await updateGlobalProgress(repositoryId, jobId, workspacePath);
     } catch (error: unknown) {
       await prisma.repositoryFile.update({
         where: { id: fileId },
