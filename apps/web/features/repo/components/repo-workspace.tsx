@@ -17,7 +17,7 @@ export function RepositoryWorkspace({ repo }: RepositoryWorkspaceProps) {
 
       <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
         {repo.readme ? (
-          <div className="max-w-3xl mx-auto leading-[1.65rem] py-4 pl-6 md:py-6 md:pl-11 pr-16">
+          <div className="max-w-3xl mx-auto">
             <MarkdownRenderer content={repo.readme} />
           </div>
         ) : (
