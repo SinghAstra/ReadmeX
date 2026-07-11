@@ -223,6 +223,9 @@ importers:
       ioredis:
         specifier: 5.10.1
         version: 5.10.1
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@6.0.3)
     devDependencies:
       tsx:
         specifier: ^4.22.4
@@ -235,16 +238,22 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
-      prisma:
-        specifier: '6'
-        version: 6.19.3(typescript@6.0.3)
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@6.0.3)
     devDependencies:
       '@types/node':
         specifier: ^26.0.0
         version: 26.0.0
+      prisma:
+        specifier: '6'
+        version: 6.19.3(typescript@6.0.3)
 
   packages/env:
     dependencies:
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(typescript@6.0.3)
       zod:
         specifier: ^4.4.3
         version: 4.4.3
