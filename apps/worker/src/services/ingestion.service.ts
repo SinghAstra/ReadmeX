@@ -12,6 +12,7 @@ import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
+import { readmeService } from "./readme.service.js";
 
 const execAsync = promisify(exec);
 
@@ -261,7 +262,9 @@ export const ingestionService = {
       const targetsToQueue = await prisma.repositoryFile.findMany({
         where: {
           repositoryId: repo.id,
-          summaryStatus: FILE_SUMMARY_STATUS.PENDING,
+          summaryStatus: {
+            not: FILE_SUMMARY_STATUS.COMPLETED,
+          },
         },
         select: { id: true },
       });
@@ -289,6 +292,15 @@ export const ingestionService = {
           status: JOB_STATUS.RUNNING,
           message: `Initializing AI analysis for ${targetsToQueue.length} files...`,
         });
+      } else if (deletedFiles.length > 0) {
+        await trackProgress({
+          jobId,
+          repositoryId: repo.id,
+          status: JOB_STATUS.RUNNING,
+          message: "Files removed. Regenerating README...",
+        });
+
+        await readmeService.triggerReadmeGeneration(repo.id, jobId);
       } else {
         await prisma.repository.update({
           where: { id: repo.id },
@@ -301,12 +313,12 @@ export const ingestionService = {
           status: JOB_STATUS.COMPLETED,
           message: "Workspace is up to date.",
         });
-      }
 
-      await prisma.job.update({
-        where: { id: jobId },
-        data: { status: JOB_STATUS.COMPLETED, completedAt: new Date() },
-      });
+        await prisma.job.update({
+          where: { id: jobId },
+          data: { status: JOB_STATUS.COMPLETED, completedAt: new Date() },
+        });
+      }
     } catch (error) {
       await prisma.job.update({
         where: { id: jobId },

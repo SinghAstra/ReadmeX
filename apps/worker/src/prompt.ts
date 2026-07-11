@@ -48,26 +48,28 @@ CRITICAL FORMATTING RULES:
 4. Use professional GitHub formatting: proper heading hierarchy (H1, H2, H3), bulleted lists, bold text for emphasis, and backticks for file paths, directory names, and technical terms.
 5. Use emoji sparingly, only as small prefixes on H3 module headers (e.g., "### 🔐 Authentication"). Never use emoji in body text.
 6. Limit the entire output to 400-600 words. A README is a front door, not a manual.
+7. Do NOT include a Tech Stack, dependencies, or installation section. You are not given package manifests or environment files, so naming specific frameworks, libraries, or versions here would be a guess, not a fact.
 
 REQUIRED STRUCTURE:
 1. # [Project Name] — the user prompt will provide a "Project Name". Use it exactly as given for the H1 title. Do not invent, rename, rephrase, or "improve" it, even if it seems generic.
-2. **Overview**: A 1-2 paragraph executive summary of what this codebase does and who it's for.
-3. **Core Architecture**: A logical breakdown of the modules provided, grouped by related functionality where sensible. Use H3 subheadings with the directory path in backticks.
-4. **Key Features**: A bulleted list of 4-6 main capabilities inferred from the modules.
-5. **Tech Stack** (only include if clearly inferable from module summaries — do not guess or list generic technologies that aren't evidenced): A short bulleted list of the primary languages, frameworks, and major dependencies.
+2. **Why This Exists**: A 1-2 paragraph explanation of the problem this codebase solves and who it's for. Infer purpose from what the modules collectively do, not from assumptions about the project's popularity or maturity.
+3. **What It Does**: A bulleted list of 4-6 core features or capabilities, written as user-facing or functional outcomes (what the system enables), not as a restatement of directory names.
+4. **How It's Built**: A logical breakdown of the modules provided, grouped by related functionality where sensible, explaining the implementation approach behind each feature area. Use H3 subheadings with the directory path in backticks. This section should connect back to the features above — for each grouping, explain how that functionality is actually realized (the mechanism, flow, or responsibility split), not just what the folder contains.
 
 CONTENT GUIDELINES:
-- You will receive a Project Name and a list of directory paths with their summaries. Transform these into a readable "Architecture" section — do not just restate each summary in order.
+- You will receive a Project Name and a list of directory paths with their summaries. Transform these into a coherent narrative — do not just restate each summary in order.
+- Every feature in "What It Does" should be traceable to something explained in "How It's Built." If a capability can't be tied to specific module behavior, leave it out rather than inventing the mechanism.
 - Smooth out the transitions. Make it read like it was written by a human engineer, not stitched together by a machine.
 - Ground every claim in the provided summaries. Do NOT invent features, integrations, or technologies that aren't stated or clearly implied. If coverage is thin for a section, keep that section brief rather than padding it with speculation.
 - Group directories that serve one cohesive feature under a single subheading rather than giving every folder its own section.
 
-GOOD EXAMPLE (Architecture Section snippet):
+GOOD EXAMPLE (How It's Built section snippet):
 ### 🔐 Authentication (\`/apps/api/src/auth\`)
-Manages the complete user identity lifecycle, including secure session handling, OAuth integration, and role-based access control middleware for the API.
+User identity is verified through a session-based middleware layer that intercepts every API request, checks for a valid token, and attaches the resolved user to the request context before it reaches route handlers. Role-based permissions are enforced at this same layer, rejecting unauthorized requests before they touch business logic.
 
 BAD EXAMPLE (What NOT to do):
 Here is the architecture, based on the module summaries provided:
 /apps/api/src/auth: This module handles auth.
-/apps/web/components: This module has UI components.`,
+/apps/web/components: This module has UI components.
+Tech Stack: Node.js, Express, React (guessed, not evidenced).`,
 };
