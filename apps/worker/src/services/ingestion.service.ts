@@ -10,6 +10,7 @@ import { fileSummarizationQueue, trackProgress } from "@repo/shared/server";
 import { exec } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import { readmeService } from "./readme.service.js";
@@ -60,6 +61,10 @@ interface TraversalStats {
   }>;
 }
 
+function getWorkspacePath(repositoryId: string) {
+  return path.join(os.tmpdir(), "summary-x", repositoryId);
+}
+
 async function traverseDirectory(
   basePath: string,
   currentPath: string,
@@ -69,7 +74,9 @@ async function traverseDirectory(
 
   for (const entry of entries) {
     const fullPath = path.join(currentPath, entry.name);
-    const relativePath = path.relative(basePath, fullPath);
+
+    const rawRelativePath = path.relative(basePath, fullPath);
+    const normalizedRelativePath = rawRelativePath.split(path.sep).join("/");
 
     if (entry.isDirectory()) {
       if (IGNORED_DIRECTORIES.has(entry.name)) {
@@ -97,7 +104,7 @@ async function traverseDirectory(
       const hash = crypto.createHash("sha256").update(content).digest("hex");
 
       stats.collectedFiles.push({
-        relativePath,
+        relativePath: normalizedRelativePath,
         extension: ext,
         size: fileSize,
         hash,
@@ -119,6 +126,8 @@ export const ingestionService = {
 
     if (!repo) return;
 
+    const workspacePath = getWorkspacePath(repo.id);
+
     try {
       await prisma.job.update({
         where: { id: jobId },
@@ -134,14 +143,14 @@ export const ingestionService = {
 
       if (isResync) {
         await execAsync(`git fetch --depth 1 && git reset --hard FETCH_HEAD`, {
-          cwd: repo.diskPath,
+          cwd: workspacePath,
           timeout: 60000,
         });
       } else {
-        await fs.mkdir(path.dirname(repo.diskPath), { recursive: true });
-        await fs.rm(repo.diskPath, { recursive: true, force: true });
+        await fs.mkdir(path.dirname(workspacePath), { recursive: true });
+        await fs.rm(workspacePath, { recursive: true, force: true });
         await execAsync(
-          `git clone --depth 1 ${repo.githubUrl} ${repo.diskPath}`,
+          `git clone --depth 1 ${repo.githubUrl} ${workspacePath}`,
           { timeout: 60000 }
         );
       }
@@ -161,12 +170,13 @@ export const ingestionService = {
         totalSize: BigInt(0),
         collectedFiles: [],
       };
-      await traverseDirectory(repo.diskPath, repo.diskPath, stats);
+
+      await traverseDirectory(workspacePath, workspacePath, stats);
 
       let readmeContents: string | null = null;
       try {
         readmeContents = await fs.readFile(
-          path.join(repo.diskPath, "README.md"),
+          path.join(workspacePath, "README.md"),
           "utf8"
         );
       } catch (error) {
@@ -178,23 +188,21 @@ export const ingestionService = {
       });
 
       const dbFileMap = new Map(
-        existingDBFiles.map((f) => [f.relativePath.replace(/\\/g, "/"), f])
+        existingDBFiles.map((f) => [f.relativePath, f])
       );
-      const fsPaths = new Set(
-        stats.collectedFiles.map((f) => f.relativePath.replace(/\\/g, "/"))
-      );
+      const fsPaths = new Set(stats.collectedFiles.map((f) => f.relativePath));
 
       const addedFiles = stats.collectedFiles.filter(
-        (f) => !dbFileMap.has(f.relativePath.replace(/\\/g, "/"))
+        (f) => !dbFileMap.has(f.relativePath)
       );
 
       const modifiedFiles = stats.collectedFiles.filter((f) => {
-        const match = dbFileMap.get(f.relativePath.replace(/\\/g, "/"));
+        const match = dbFileMap.get(f.relativePath);
         return match && match.hash !== f.hash;
       });
 
       const deletedFiles = existingDBFiles.filter(
-        (f) => !fsPaths.has(f.relativePath.replace(/\\/g, "/"))
+        (f) => !fsPaths.has(f.relativePath)
       );
 
       await trackProgress({
