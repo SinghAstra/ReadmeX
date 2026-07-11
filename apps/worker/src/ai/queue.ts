@@ -1,8 +1,8 @@
 import { queueSubscriber, redisConnection } from "@repo/shared/server";
 import crypto from "node:crypto";
-import { ENGINE_CONFIG, getQueueChannelKey, REDIS_KEYS } from "./constants.js";
-import { peekNextKeyIndex } from "./key-manager.js";
-import { trackQueueLength } from "./metrics.js";
+import { ENGINE_CONFIG, getQueueChannelKey, REDIS_KEYS } from "./constants";
+import { peekNextKeyIndex } from "./key-manager";
+import { trackQueueLength } from "./metrics";
 
 const pendingResolvers = new Map<string, () => void>();
 

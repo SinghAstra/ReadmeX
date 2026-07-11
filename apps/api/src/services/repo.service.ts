@@ -85,7 +85,6 @@ export const repositoryService = {
           name,
           owner,
           avatar: repositoryAvatarUrl,
-          diskPath: uniqueDiskPath,
           status: REPOSITORY_STATUS.PENDING,
           totalSize: BigInt(0),
         },
@@ -187,7 +186,6 @@ export const repositoryService = {
       name: repo.name,
       owner: repo.owner,
       avatar: repo.avatar,
-      diskPath: repo.diskPath,
       status: repo.status,
       readme: repo.readme,
       latestJobId: repo.jobs[0]?.id || null,
@@ -216,7 +214,6 @@ export const repositoryService = {
       name: repo.name,
       owner: repo.owner,
       avatar: repo.avatar,
-      diskPath: repo.diskPath,
       status: repo.status,
       readme: repo.readme,
       totalFiles: repo.totalFiles,
@@ -387,13 +384,6 @@ export const repositoryService = {
 
     await prisma.repository.delete({
       where: { id },
-    });
-
-    fs.rm(repo.diskPath, { recursive: true, force: true }).catch((err) => {
-      console.error(
-        `⚠️ Failed to clean disk space for repository mapping ${id}:`,
-        err
-      );
     });
 
     return { message: "Repository successfully removed." };

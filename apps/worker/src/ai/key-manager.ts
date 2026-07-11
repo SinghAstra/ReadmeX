@@ -1,7 +1,7 @@
 import { redisConnection } from "@repo/shared/server";
 import dotenv from "dotenv";
-import { getCoolDownKeyPath } from "./constants.js";
-import { recordCoolDownTriggered } from "./metrics.js";
+import { getCoolDownKeyPath } from "./constants";
+import { recordCoolDownTriggered } from "./metrics";
 
 dotenv.config();
 

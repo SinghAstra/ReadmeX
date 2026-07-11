@@ -1,14 +1,14 @@
 import { logError } from "@repo/shared";
 import { redisConnection } from "@repo/shared/server";
 import Groq from "groq-sdk";
-import { getCachedClient } from "./client-cache.js";
-import { ENGINE_CONFIG, REDIS_KEYS } from "./constants.js";
-import { classifyError } from "./error-classifier.js";
-import { coolDownKey, getNextKey } from "./key-manager.js";
-import { recordFailure, recordRequestStart, recordSuccess } from "./metrics.js";
-import { acquire, release } from "./queue.js";
-import { executeWithRetry } from "./retry-manager.js";
-import { withTimeout } from "./timeout.js";
+import { getCachedClient } from "./client-cache";
+import { ENGINE_CONFIG, REDIS_KEYS } from "./constants";
+import { classifyError } from "./error-classifier";
+import { coolDownKey, getNextKey } from "./key-manager";
+import { recordFailure, recordRequestStart, recordSuccess } from "./metrics";
+import { acquire, release } from "./queue";
+import { executeWithRetry } from "./retry-manager";
+import { withTimeout } from "./timeout";
 
 export type ChatRole = "system" | "user" | "assistant";
 
