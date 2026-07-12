@@ -31,8 +31,8 @@ export function RepoSubmissionPanel() {
         reset();
         router.push(`/repo/${data.repositoryId}`);
         return data.isDuplicate
-          ? "Repository Already exists."
-          : "Repository linked! Analysis started.";
+          ? "Repository already exists. Loading workspace..."
+          : "Repository linked! ReadmeX pipeline started.";
       },
       error: (err: Error) => err.message,
     });
@@ -41,10 +41,11 @@ export function RepoSubmissionPanel() {
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col items-center justify-center text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground mb-2">
-        Analyze any GitHub repository
+        Generate a perfect README with AI
       </h1>
       <p className="text-sm md:text-base text-muted-foreground mb-8">
-        Get instant file summaries and map out your code architecture with AI.
+        Paste your GitHub link to instantly map your code architecture and write
+        a comprehensive master document.
       </p>
 
       <form
@@ -74,7 +75,7 @@ export function RepoSubmissionPanel() {
                 </>
               ) : (
                 <>
-                  Analyze
+                  Generate
                   <CornerDownLeft className="hidden sm:inline size-3 text-primary-foreground/80" />
                 </>
               )}
