@@ -170,16 +170,6 @@ export const ingestionService = {
 
       await traverseDirectory(workspacePath, workspacePath, stats);
 
-      let readmeContents: string | null = null;
-      try {
-        readmeContents = await fs.readFile(
-          path.join(workspacePath, "README.md"),
-          "utf8"
-        );
-      } catch (error) {
-        logError(error);
-      }
-
       const existingDBFiles = await prisma.repositoryFile.findMany({
         where: { repositoryId: repo.id },
       });
@@ -214,7 +204,6 @@ export const ingestionService = {
           where: { id: repo.id },
           data: {
             status: REPOSITORY_STATUS.PROCESSING,
-            readme: readmeContents,
             totalFiles: stats.totalFiles,
             supportedFiles: stats.supportedFiles,
             ignoredFiles: stats.ignoredFiles,
