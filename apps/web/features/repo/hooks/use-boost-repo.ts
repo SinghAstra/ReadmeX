@@ -1,4 +1,4 @@
-import { REPOSITORY_STATUS } from "@repo/shared";
+import { GetRepositoryResponse, REPOSITORY_STATUS } from "@repo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { boostRepositoryAction } from "../actions/boost-repo-action";
@@ -10,12 +10,20 @@ export function useBoostRepository(repositoryId: string) {
   return useMutation({
     mutationFn: async () => {
       const response = await boostRepositoryAction(repositoryId);
-      if (!response.success) {
-        throw new Error(response.error.message);
-      }
+      if (!response.success) throw new Error(response.error.message);
       return response.data;
     },
     onSuccess: (data) => {
+      const oldRepoData = queryClient.getQueryData<GetRepositoryResponse>(
+        repoKeys.detail(repositoryId)
+      );
+
+      if (oldRepoData?.latestJobId) {
+        queryClient.removeQueries({
+          queryKey: repoKeys.jobLogs(repositoryId, oldRepoData.latestJobId),
+        });
+      }
+
       queryClient.setQueryData(repoKeys.detail(repositoryId), (oldData) => {
         if (!oldData) return oldData;
         return {
@@ -28,6 +36,9 @@ export function useBoostRepository(repositoryId: string) {
       void Promise.all([
         queryClient.invalidateQueries({
           queryKey: repoKeys.detail(repositoryId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: repoKeys.files(repositoryId),
         }),
         queryClient.invalidateQueries({ queryKey: repoKeys.lists() }),
       ]);
