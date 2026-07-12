@@ -72,8 +72,6 @@ export const repositoryService = {
     }
 
     const repositoryId = crypto.randomUUID();
-    const uniqueDiskPath = path.join(os.tmpdir(), "summary-x", repositoryId);
-
     const repositoryAvatarUrl = `https://github.com/${owner}.png`;
 
     try {
