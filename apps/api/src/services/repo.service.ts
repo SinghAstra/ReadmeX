@@ -30,14 +30,18 @@ interface IngestParams {
 
 export const repositoryService = {
   async createRepository(params: IngestParams) {
-    const { userId, githubUrl } = params;
+    const { userId, githubUrl: rawGithubUrl } = params;
     let owner: string;
     let name: string;
+    let normalizedGithubUrl: string;
 
     try {
-      const parsed = parseGitHubUrl(githubUrl);
-      owner = parsed.owner;
-      name = parsed.name;
+      const parsed = parseGitHubUrl(rawGithubUrl);
+
+      owner = parsed.owner.toLowerCase();
+      name = parsed.name.toLowerCase();
+
+      normalizedGithubUrl = `https://github.com/${owner}/${name}`;
     } catch {
       throw new BadRequestError(
         COMMON_ERROR_CODES.SCHEMA_MISMATCH,
@@ -48,7 +52,7 @@ export const repositoryService = {
     const existingRepo = await prisma.repository.findFirst({
       where: {
         userId,
-        githubUrl,
+        githubUrl: normalizedGithubUrl,
       },
     });
 
@@ -59,7 +63,7 @@ export const repositoryService = {
     }
 
     try {
-      const pingResponse = await fetch(githubUrl, {
+      const pingResponse = await fetch(normalizedGithubUrl, {
         method: "HEAD",
         redirect: "follow",
       });
@@ -79,7 +83,7 @@ export const repositoryService = {
         data: {
           id: repositoryId,
           userId,
-          githubUrl,
+          githubUrl: normalizedGithubUrl,
           name,
           owner,
           avatar: repositoryAvatarUrl,
@@ -88,16 +92,12 @@ export const repositoryService = {
         },
       });
 
-      console.log("newRepo is ", newRepo);
-
       const job = await prisma.job.create({
         data: {
           repositoryId: newRepo.id,
           status: JOB_STATUS.PENDING,
         },
       });
-
-      console.log("job is ", job);
 
       await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
         jobId: job.id,

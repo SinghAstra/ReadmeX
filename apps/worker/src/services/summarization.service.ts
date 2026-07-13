@@ -11,9 +11,6 @@ import { getWorkspacePath } from "../utils/workspace.js";
 import { readmeService } from "./readme.service.js";
 
 export const summarizationService = {
-  /**
-   * Core entry point for processing background file summaries.
-   */
   async processFileSummary(
     fileId: string,
     repositoryId: string,
