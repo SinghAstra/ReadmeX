@@ -71,7 +71,7 @@ export const readmeService = {
         message: `Grouping your project files... (${buckets.length} folders found)`,
       });
 
-      for (const bucket of buckets) {
+       for (const bucket of buckets) {
         const fileData = bucket.files
           .map((f) => `File: ${f.path}\nSummary: ${f.summary}`)
           .join("\n\n");
@@ -92,23 +92,43 @@ export const readmeService = {
           aiResponse?.choices[0]?.message?.content?.trim() ||
           "No Module summary written.";
 
-        await prisma.moduleSummary.create({
-          data: {
-            summary: moduleSummary,
+        const existingSummary = await prisma.moduleSummary.findFirst({
+          where: {
+            repositoryId: repositoryId,
             path: bucket.path,
-            repositoryId,
-            files: {
-              connect: bucket.files.map((f) => ({ id: f.id })),
-            },
           },
         });
+
+        if (existingSummary) {
+          await prisma.moduleSummary.update({
+            where: { id: existingSummary.id },
+            data: {
+              summary: `${existingSummary.summary}\n\n---\n\n${moduleSummary}`,
+              files: {
+                connect: bucket.files.map((f) => ({ id: f.id })),
+              },
+            },
+          });
+        } else {
+          await prisma.moduleSummary.create({
+            data: {
+              summary: moduleSummary,
+              path: bucket.path,
+              repositoryId,
+              files: {
+                connect: bucket.files.map((f) => ({ id: f.id })),
+              },
+            },
+          });
+        }
+
         runId++;
 
         await trackProgress({
           jobId,
           repositoryId,
           status: JOB_STATUS.RUNNING,
-          message: `Reading folder: ${bucket.path} (${runId}/${buckets.length})`,
+          message: `Analyzing folder: ${bucket.path} (${runId}/${buckets.length})`,
         });
       }
 
