@@ -27,9 +27,11 @@ export const authController = {
       const { token } = req.query as VerifyEmailFormValues;
 
       console.log("token is ", token);
+
       const responseData = await authService.verifyEmailToken(token);
 
       console.log("responseData is ", responseData);
+
       res.status(200).json(successResponse(responseData));
     } catch (error) {
       next(error);

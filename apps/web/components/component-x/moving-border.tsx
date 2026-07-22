@@ -49,6 +49,7 @@ const MovingBorder = ({
   };
 
   const animationDuration = speedMap[speed];
+
   const rotation = direction === "clockwise" ? 360 : -360;
 
   const dimensions = {

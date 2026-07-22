@@ -17,6 +17,7 @@ const transporter = nodemailer.createTransport({
 export async function POST(request: Request): Promise<Response> {
   try {
     const body = await request.json();
+
     const { to, subject, html } = body;
 
     if (!to || !subject || !html) {

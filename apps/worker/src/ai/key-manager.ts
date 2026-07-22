@@ -36,6 +36,7 @@ export async function coolDownKey(
   await redisConnection.set(redisKey, "COOL_DOWN_ACTIVE", "PX", durationMs);
 
   await recordCoolDownTriggered();
+
   console.log(
     `🔒 [Shared Key Registry] Index ${index} flagged as cool_down status across cluster.`,
   );
@@ -46,7 +47,9 @@ export async function getNextKey(): Promise<RotatedKeyResult> {
 
   for (let i = 0; i < poolLength; i++) {
     const checkIndex = (currentRotationIndex + i) % poolLength;
+
     const key = apiKeysPool[checkIndex];
+
     const redisKey = getCoolDownKeyPath(checkIndex);
 
     const isCooledDown = await redisConnection.exists(redisKey);
@@ -61,6 +64,7 @@ export async function getNextKey(): Promise<RotatedKeyResult> {
   const fallbackIndex = currentRotationIndex;
 
   currentRotationIndex = (currentRotationIndex + 1) % poolLength;
+
   console.log(
     `⚠️ [Shared Key Registry] All keys are cooling down globally. Falling back to Index ${fallbackIndex}.`,
   );

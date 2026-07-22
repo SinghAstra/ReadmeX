@@ -23,10 +23,13 @@ readmeGenerationWorker.on("failed", (job, error) => {
 readmeGenerationWorker.on("ready", () =>
   console.log("readmeGenerationWorker ready"),
 );
+
 readmeGenerationWorker.on("active", (job) =>
   console.log("readmeGenerationWorker active", job.id),
 );
+
 readmeGenerationWorker.on("error", (err) => {
   console.log("readmeGenerationWorker error");
+
   logError(err);
 });

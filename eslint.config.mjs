@@ -11,15 +11,16 @@ export default tseslint.config(
     rules: {
       "padding-line-between-statements": [
         "error",
-        { blankLine: "always", prev: "*", next: "return" },
-        { blankLine: "always", prev: ["const", "let", "var"], next: "*" },
-        {
-          blankLine: "any",
-          prev: ["const", "let", "var"],
-          next: ["const", "let", "var"],
-        },
-        { blankLine: "always", prev: "*", next: "export" },
+        { blankLine: "always", prev: "*", next: "*" },
+        { blankLine: "any", prev: "import", next: "import" },
       ],
+
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-useless-catch": "warn",
     },
   },
 );

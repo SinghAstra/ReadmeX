@@ -49,6 +49,7 @@ function EllipseBackground({
   maskImage = true,
 }: EllipseBackgroundProps) {
   const gradientPosition = positionMap[position];
+
   let backgroundGradientValue;
 
   if (variant === "fade") {
@@ -58,7 +59,9 @@ function EllipseBackground({
       transition / 2
     }%, ${colorTwo} ${transition}%)`;
   }
+
   const maskGradientValue = `radial-gradient(ellipse ${radiusX}% ${radiusY}% at ${gradientPosition}, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)`;
+
   const style = {
     background: backgroundGradientValue,
     ...(maskImage && { maskImage: maskGradientValue }),

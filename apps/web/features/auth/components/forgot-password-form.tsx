@@ -12,6 +12,7 @@ import { forgotPasswordAction } from "../actions/forgot-password";
 
 export function ForgotPasswordForm() {
   const [sent, setSent] = useState(false);
+
   const [sentEmail, setSentEmail] = useState("");
 
   const {
@@ -31,7 +32,9 @@ export function ForgotPasswordForm() {
         if (!result.success) {
           throw new Error(result.error.message);
         }
+
         setSentEmail(values.email);
+
         setSent(true);
 
         return result.data.message;

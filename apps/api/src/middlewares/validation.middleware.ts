@@ -12,6 +12,7 @@ export const validateBody = (schema: z.ZodTypeAny) => {
       const parsed = await schema.parseAsync(req.body);
 
       req.body = parsed;
+
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -21,6 +22,7 @@ export const validateBody = (schema: z.ZodTypeAny) => {
 
         return next(new ValidationError(primaryMessage));
       }
+
       next(error);
     }
   };
@@ -38,7 +40,9 @@ export const validateQuery = (schema: z.ZodTypeAny) => {
       for (const key in req.query) {
         delete req.query[key];
       }
+
       Object.assign(req.query, parsed);
+
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -48,6 +52,7 @@ export const validateQuery = (schema: z.ZodTypeAny) => {
 
         return next(new ValidationError(primaryMessage));
       }
+
       next(error);
     }
   };

@@ -17,13 +17,16 @@ export function buildRepositoryTree(
 
   for (const file of files) {
     const normalizedPath = file.relativePath.replace(/\\/g, "/");
+
     const parts = normalizedPath.split("/");
 
     let currentElement = root;
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
+
       const isLastPart = i === parts.length - 1;
+
       const runningPath = parts.slice(0, i + 1).join("/");
 
       let targetNode = currentElement.children.find(

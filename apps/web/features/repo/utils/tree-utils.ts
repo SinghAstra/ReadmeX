@@ -2,6 +2,7 @@ import { type RepositoryTreeNode } from "@repo/shared";
 
 export function compileProjectSummaryText(nodes: RepositoryTreeNode[]): string {
   const sections: string[] = [];
+
   const traverse = (items: RepositoryTreeNode[]) => {
     for (const item of items) {
       if (

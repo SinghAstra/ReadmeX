@@ -62,6 +62,7 @@ export const readmeService = {
       });
 
       const buckets = await readmeService.prepareBuckets(repositoryId);
+
       let runId = 0;
 
       await trackProgress({
@@ -75,6 +76,7 @@ export const readmeService = {
         const fileData = bucket.files
           .map((f) => `File: ${f.path}\nSummary: ${f.summary}`)
           .join("\n\n");
+
         const userPayload = `Directory: ${bucket.path}\n\nFiles:\n${fileData}`;
 
         const aiResponse = await executeAIRequest(runId, {

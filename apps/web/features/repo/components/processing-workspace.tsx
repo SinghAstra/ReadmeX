@@ -18,9 +18,11 @@ interface ProcessingWorkspaceProps {
 
 export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
   const { data: session } = useSession();
+
   const activeJobId = repo.latestJobId ?? "";
 
   const { data: jobData } = useJobLogs(repo.id, activeJobId);
+
   const { liveMessages } = useJobLiveStream(
     activeJobId,
     repo.id,
@@ -29,16 +31,19 @@ export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
 
   const allTerminalMessages = useMemo(() => {
     const logsArray = jobData?.logs ?? [];
+
     const historicalMapped = logsArray.map((log) => ({
       message: log.message,
       timestamp: log.createdAt,
     }));
 
     const combined = [...historicalMapped, ...liveMessages];
+
     const seen = new Set<string>();
 
     return combined.filter((item) => {
       if (seen.has(item.message)) return false;
+
       seen.add(item.message);
 
       return true;

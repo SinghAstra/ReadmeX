@@ -12,7 +12,9 @@ queueSubscriber.on("message", (channel: string, message: string): void => {
 
     if (resolve) {
       resolve();
+
       pendingResolvers.delete(channel);
+
       queueSubscriber.unsubscribe(channel).catch(() => {});
     }
   }
@@ -21,7 +23,9 @@ queueSubscriber.on("message", (channel: string, message: string): void => {
 export async function initializeDistributedQueue(): Promise<void> {
   try {
     await redisConnection.del(REDIS_KEYS.ACTIVE_COUNT);
+
     await redisConnection.del(REDIS_KEYS.QUEUE_LIST);
+
     console.log(
       "🧹 [Queue System] Cleaned stale distributed concurrency trackers successfully.",
     );
@@ -38,10 +42,12 @@ export async function acquire(
   totalTaskStartTime: number,
 ): Promise<void> {
   const currentActive = await redisConnection.incr(REDIS_KEYS.ACTIVE_COUNT);
+
   const nextEstimatedIndex = peekNextKeyIndex();
 
   if (currentActive <= ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS) {
     const queueSize = await redisConnection.llen(REDIS_KEYS.QUEUE_LIST);
+
     const timeSec = ((Date.now() - totalTaskStartTime) / 1000).toFixed(2);
 
     console.log(
@@ -54,6 +60,7 @@ export async function acquire(
   await redisConnection.decr(REDIS_KEYS.ACTIVE_COUNT);
 
   const uniqueWorkerToken = crypto.randomUUID();
+
   const privateChannel = getQueueChannelKey(uniqueWorkerToken);
 
   await redisConnection.rpush(REDIS_KEYS.QUEUE_LIST, uniqueWorkerToken);
@@ -77,7 +84,9 @@ export async function acquire(
   const postActive = await redisConnection
     .get(REDIS_KEYS.ACTIVE_COUNT)
     .then((v) => (v ? parseInt(v, 10) : 0));
+
   const postQueueSize = await redisConnection.llen(REDIS_KEYS.QUEUE_LIST);
+
   const releaseTimeSec = ((Date.now() - totalTaskStartTime) / 1000).toFixed(2);
 
   console.log(

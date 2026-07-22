@@ -29,14 +29,18 @@ interface IngestParams {
 export const repositoryService = {
   async createRepository(params: IngestParams) {
     const { userId, githubUrl: rawGithubUrl } = params;
+
     let owner: string;
+
     let name: string;
+
     let normalizedGithubUrl: string;
 
     try {
       const parsed = parseGitHubUrl(rawGithubUrl);
 
       owner = parsed.owner.toLowerCase();
+
       name = parsed.name.toLowerCase();
 
       normalizedGithubUrl = `https://github.com/${owner}/${name}`;
@@ -75,6 +79,7 @@ export const repositoryService = {
     }
 
     const repositoryId = crypto.randomUUID();
+
     const repositoryAvatarUrl = `https://github.com/${owner}.png`;
 
     const newRepo = await prisma.repository.create({
@@ -136,6 +141,7 @@ export const repositoryService = {
           flatFiles.filter((f) => f.summaryStatus !== "COMPLETED").length
         } total remaining). Showing up to 10 items:`,
       );
+
       incompleteSamples.forEach((file) => {
         console.log(
           `  ↳ 📄 Path: ${file.relativePath} | Status: [${file.summaryStatus}]`,

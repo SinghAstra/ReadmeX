@@ -22,6 +22,7 @@ export function OTPProvider({
   length?: number;
 }) {
   const [values, setValues] = useState<string[]>(Array(length).fill(""));
+
   const [focusIndex, setFocusIndex] = useState(0);
 
   return (
@@ -65,6 +66,7 @@ interface OTPInputBoxProps {
 
 export function OTPInputBox({ index }: OTPInputBoxProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+
   const { values, setValues, focusIndex, setFocusIndex } = useOTP();
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
     const newValues = [...values];
 
     newValues[index] = value;
+
     setValues(newValues);
 
     // Move to next input if digit entered
@@ -98,6 +101,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
       const newValues = [...values];
 
       newValues[index] = "";
+
       setValues(newValues);
 
       // Move to previous input on backspace
@@ -113,7 +117,9 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
+
     const pastedData = e.clipboardData.getData("text");
+
     const digits = pastedData
       .replace(/\D/g, "")
       .split("")
@@ -124,6 +130,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
     digits.forEach((digit, i) => {
       newValues[index + i] = digit;
     });
+
     setValues(newValues);
 
     // Focus last input or next empty input

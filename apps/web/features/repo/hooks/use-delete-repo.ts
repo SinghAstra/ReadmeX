@@ -18,7 +18,9 @@ export function useDeleteRepository() {
     },
     onSuccess: (data, id) => {
       toast.success("Repository removed successfully");
+
       queryClient.removeQueries({ queryKey: repoKeys.detail(id) });
+
       queryClient.invalidateQueries({ queryKey: repoKeys.lists() });
     },
   });

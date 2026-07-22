@@ -12,6 +12,7 @@ export async function updateGlobalProgress(
   const totalCount = await prisma.repositoryFile.count({
     where: { repositoryId },
   });
+
   const completedCount = await prisma.repositoryFile.count({
     where: { repositoryId, summaryStatus: FILE_SUMMARY_STATUS.COMPLETED },
   });
@@ -35,11 +36,13 @@ export async function updateGlobalProgress(
 
     try {
       await fs.rm(diskPath, { recursive: true, force: true });
+
       console.log(
         `[CLEANUP] Successfully deleted repository from disk: ${diskPath}`,
       );
     } catch (error) {
       logError(error);
+
       console.error(
         `[CLEANUP ERROR] Failed to delete directory ${diskPath}:`,
         error,

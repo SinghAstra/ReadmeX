@@ -22,6 +22,7 @@ interface RepositoryPageProps {
 
 export default async function RepositoryPage({ params }: RepositoryPageProps) {
   const { id } = await params;
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({

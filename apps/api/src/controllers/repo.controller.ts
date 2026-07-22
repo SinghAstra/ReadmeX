@@ -83,6 +83,7 @@ export const repositoryController = {
           "Please sign in to continue.",
         );
       }
+
       const userId = req.user.id;
 
       const repositories =
@@ -167,6 +168,7 @@ export const repositoryController = {
       }
 
       const { ids } = deleteMultipleReposInputSchema.parse(req.body);
+
       const result = await repositoryService.deleteMultipleRepositories(
         ids,
         req.user.id,

@@ -20,7 +20,9 @@ async function request<T>(
   options: RequestOptions = {},
 ): Promise<ApiResponse<T>> {
   const baseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
+
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
   const url = `${baseUrl}${normalizedPath}`;
 
   const { body, ...restOptions } = options;

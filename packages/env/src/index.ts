@@ -87,7 +87,9 @@ function validate<T>(
         console.error(`   👉 ${key}: ${value._errors.join(", ")}`);
       }
     }
+
     console.error("\nApplication startup aborted.\n");
+
     process.exit(1);
   }
 

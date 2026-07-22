@@ -51,6 +51,7 @@ const PATH_TRANSLATIONS = [
   "/i18n/",
   "/locale/",
 ];
+
 const PATH_STATIC_ASSETS = [
   "assets/icons/",
   "public/images/",
@@ -64,6 +65,7 @@ export function classifyFile(
   content: string,
 ): ClassificationResult {
   const normalizedPath = relativePath.toLowerCase().replace(/\\/g, "/");
+
   const normalizedName = fileName.toLowerCase();
 
   if (
@@ -99,6 +101,7 @@ export function classifyFile(
 
   if (PATH_TRANSLATIONS.some((pattern) => normalizedPath.includes(pattern))) {
     const localeMatch = fileName.match(/^([a-zA-Z]{2,3}([-_][a-zA-Z]{2,4})?)/);
+
     const localeName = localeMatch ? ` for the [${localeMatch[1]}] locale` : "";
 
     return {

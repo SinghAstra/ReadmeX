@@ -25,10 +25,15 @@ import {
 import { PanelLeftIcon } from "lucide-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
+
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+
 const SIDEBAR_WIDTH = "16rem";
+
 const SIDEBAR_WIDTH_MOBILE = "18rem";
+
 const SIDEBAR_WIDTH_ICON = "3rem";
+
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextProps = {
@@ -67,12 +72,15 @@ function SidebarProvider({
   onOpenChange?: (open: boolean) => void;
 }) {
   const isMobile = useIsMobile();
+
   const [openMobile, setOpenMobile] = React.useState(false);
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen);
+
   const open = openProp ?? _open;
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value;
@@ -102,6 +110,7 @@ function SidebarProvider({
         (event.metaKey || event.ctrlKey)
       ) {
         event.preventDefault();
+
         toggleSidebar();
       }
     };
@@ -269,6 +278,7 @@ function SidebarTrigger({
       className={cn(className)}
       onClick={(event) => {
         onClick?.(event);
+
         toggleSidebar();
       }}
       {...props}
@@ -504,6 +514,7 @@ function SidebarMenuButton({
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot.Root : "button";
+
   const { isMobile, state } = useSidebar();
 
   const button = (

@@ -83,8 +83,6 @@ export const ingestionService = {
         });
 
         await readmeService.triggerReadmeGeneration(repo.id, jobId);
-
-        return 4;
       } else {
         await prisma.repository.update({
           where: { id: repo.id },
@@ -122,6 +120,7 @@ export const ingestionService = {
       });
 
       logError(error);
+
       throw error;
     }
   },

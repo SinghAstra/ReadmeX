@@ -16,12 +16,14 @@ export function useJobLiveStream(
   accessToken: string | undefined,
 ) {
   const queryClient = useQueryClient();
+
   const [liveMessages, setLiveMessages] = useState<TerminalMessage[]>([]);
 
   const [prevJobId, setPrevJobId] = useState(jobId);
 
   if (jobId !== prevJobId) {
     setPrevJobId(jobId);
+
     setLiveMessages([]);
   }
 
@@ -29,6 +31,7 @@ export function useJobLiveStream(
     if (!jobId || !accessToken) return;
 
     const sseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/jobs/${jobId}/events?token=${accessToken}`;
+
     const eventSource = new EventSource(sseUrl);
 
     eventSource.onmessage = (event) => {
@@ -67,6 +70,7 @@ export function useJobLiveStream(
 
     eventSource.onerror = (error) => {
       logError(error);
+
       eventSource.close();
     };
 

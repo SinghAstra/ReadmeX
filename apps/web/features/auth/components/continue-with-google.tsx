@@ -12,6 +12,7 @@ const ContinueWithGoogle = () => {
   const handleContinueWithGoogle = async () => {
     try {
       setIsGoogleLoading(true);
+
       await signIn("google", {
         redirect: true,
         callbackUrl: ROUTES.DASHBOARD,

@@ -32,7 +32,9 @@ export async function executeAIRequest(
   const initialActive = await redisConnection
     .get(REDIS_KEYS.ACTIVE_COUNT)
     .then((v) => (v ? parseInt(v, 10) : 0));
+
   const initialQueue = await redisConnection.llen(REDIS_KEYS.QUEUE_LIST);
+
   const startTimeSec = ((Date.now() - totalTaskStartTime) / 1000).toFixed(2);
 
   console.log(
@@ -74,6 +76,7 @@ export async function executeAIRequest(
               ENGINE_CONFIG.COOL_DOWN_DURATION_MS,
             );
           }
+
           throw { originalError: error, keyIndex: keyInfo.index };
         }
       },
@@ -91,11 +94,13 @@ export async function executeAIRequest(
     const successActive = await redisConnection
       .get(REDIS_KEYS.ACTIVE_COUNT)
       .then((v) => (v ? parseInt(v, 10) : 0));
+
     const successQueue = await redisConnection.llen(REDIS_KEYS.QUEUE_LIST);
 
     const textSnippet =
       outcome.data.choices[0]?.message?.content?.trim().replace(/\n/g, " ") ||
       "";
+
     const displayResult =
       textSnippet.length > 40
         ? `${textSnippet.substring(0, 40)}...`
@@ -118,6 +123,7 @@ export async function executeAIRequest(
       originalError?: unknown;
       keyIndex?: number;
     };
+
     const actualException = contextError.originalError || error;
 
     logError(actualException);
@@ -125,9 +131,11 @@ export async function executeAIRequest(
     const failureActive = await redisConnection
       .get(REDIS_KEYS.ACTIVE_COUNT)
       .then((v) => (v ? parseInt(v, 10) : 0));
+
     const failureQueue = await redisConnection.llen(REDIS_KEYS.QUEUE_LIST);
 
     const apiError = actualException as { message?: string };
+
     const errorMessage = apiError.message || String(actualException);
 
     console.log(

@@ -14,7 +14,9 @@ import { resetPasswordAction } from "../actions/reset-password";
 
 export function ResetPasswordForm() {
   const router = useRouter();
+
   const searchParams = useSearchParams();
+
   const token = searchParams.get("token") ?? "";
 
   const {
@@ -35,6 +37,7 @@ export function ResetPasswordForm() {
         if (!result.success) {
           throw new Error(result.error.message);
         }
+
         router.push(ROUTES.SIGN_IN);
 
         return result.data.message;

@@ -38,9 +38,13 @@ export const readmeGenerationQueue = new Queue<ReadmeGenerationJobData>(
 export async function deleteAllJobsInQueue(queue: Queue) {
   try {
     console.log(`⏸️ Pausing queue ${queue.name} for cleanup...`);
+
     await queue.pause();
+
     await queue.obliterate({ force: true });
+
     await queue.resume();
+
     console.log(`🧹 Successfully obliterated all jobs in queue: ${queue.name}`);
   } catch (error) {
     console.error(`🚨 Failed to clear queue ${queue.name}:`, error);

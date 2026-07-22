@@ -23,11 +23,13 @@ export function CopyReadmeButton({
       await navigator.clipboard.writeText(textToCopy);
 
       setIsCopied(true);
+
       toast.success("README copied to clipboard!");
 
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
       console.error("Failed to copy text: ", error);
+
       toast.error("Failed to copy to clipboard. Please try manually.");
     }
   };

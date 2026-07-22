@@ -15,6 +15,7 @@ export const mailService = {
     token,
   }: SendVerificationProps): Promise<void> {
     const verificationLink = `${env.FRONTEND_URL}/verify-email?token=${token}`;
+
     const htmlContent = getVerificationEmailTemplate({
       productName: PRODUCT_NAME,
       verificationLink,
@@ -54,7 +55,9 @@ export const mailService = {
     readonly token: string;
   }): Promise<void> {
     const { email, token } = params;
+
     const resetLink = `${env.FRONTEND_URL}/reset-password?token=${token}`;
+
     const htmlContent = getResetPasswordMailTemplate({
       productName: PRODUCT_NAME,
       resetLink,

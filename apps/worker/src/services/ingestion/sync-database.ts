@@ -11,16 +11,19 @@ export async function syncWorkspaceToDatabase(
   });
 
   const dbFileMap = new Map(existingDBFiles.map((f) => [f.relativePath, f]));
+
   const fsPaths = new Set(stats.collectedFiles.map((f) => f.relativePath));
 
   const addedFiles = stats.collectedFiles.filter(
     (f) => !dbFileMap.has(f.relativePath),
   );
+
   const modifiedFiles = stats.collectedFiles.filter((f) => {
     const match = dbFileMap.get(f.relativePath);
 
     return match && match.hash !== f.hash;
   });
+
   const deletedFiles = existingDBFiles.filter(
     (f) => !fsPaths.has(f.relativePath),
   );

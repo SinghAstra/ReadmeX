@@ -17,7 +17,9 @@ export async function cloneRepository(
     });
   } else {
     await fs.mkdir(path.dirname(workspacePath), { recursive: true });
+
     await fs.rm(workspacePath, { recursive: true, force: true });
+
     await execAsync(`git clone --depth 1 ${githubUrl} ${workspacePath}`, {
       timeout: 60000,
     });

@@ -19,13 +19,17 @@ export const repositoryIngestionWorker = new Worker<RepoIngestionJobData>(
 repositoryIngestionWorker.on("failed", (job, error) => {
   logError(error);
 });
+
 repositoryIngestionWorker.on("ready", () =>
   console.log("repositoryIngestionWorker ready"),
 );
+
 repositoryIngestionWorker.on("active", (job) =>
   console.log("repositoryIngestionWorker active", job.id),
 );
+
 repositoryIngestionWorker.on("error", (err) => {
   console.log("repositoryIngestionWorker error");
+
   logError(err);
 });

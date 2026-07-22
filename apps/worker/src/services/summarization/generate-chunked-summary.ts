@@ -8,21 +8,27 @@ export async function generateChunkedSummary(
   content: string,
 ): Promise<string> {
   const targetChunkSize = Math.floor(MODEL_CONFIG.maxInputTokens * 3.2);
+
   const lines = content.split("\n");
+
   const chunks: string[] = [];
+
   let currentChunk = "";
 
   for (const line of lines) {
     if ((currentChunk + "\n" + line).length > targetChunkSize) {
       if (currentChunk) chunks.push(currentChunk);
+
       currentChunk = line;
     } else {
       currentChunk = currentChunk ? currentChunk + "\n" + line : line;
     }
   }
+
   if (currentChunk) chunks.push(currentChunk);
 
   const totalOriginalChunks = chunks.length;
+
   const isTruncated = totalOriginalChunks > 2;
 
   const chunksToProcess = isTruncated ? chunks.slice(0, 2) : chunks;
@@ -46,6 +52,7 @@ export async function generateChunkedSummary(
         },
       ],
     });
+
     const partialText = chunkResponse?.choices[0]?.message?.content?.trim();
 
     if (partialText) intermediateSummaries.push(partialText);

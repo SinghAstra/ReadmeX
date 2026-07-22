@@ -20,6 +20,7 @@ export const summarizationService = {
     const file = await prisma.repositoryFile.findUnique({
       where: { id: fileId },
     });
+
     const repo = await prisma.repository.findUnique({
       where: { id: repositoryId },
     });
@@ -39,6 +40,7 @@ export const summarizationService = {
 
     try {
       const absoluteFilePath = path.join(workspacePath, file.relativePath);
+
       const fileContent = await fs.readFile(absoluteFilePath, "utf8");
 
       const classification = classifyFile(
@@ -51,13 +53,16 @@ export const summarizationService = {
 
       if (!classification.shouldSummarizeWithAI) {
         summaryText = classification.staticSummary;
+
         console.log(
           `[Run ${runId}] ⚡ FAST-TRACK | Bypassed AI overhead for ${classification.category} resource: ${file.relativePath}`,
         );
       } else {
         const contentTokens = estimateTokenCount(fileContent);
+
         const promptTokens =
           estimateTokenCount(SYSTEM_PROMPT.FILE_SUMMARY) + 150;
+
         const totalEstimatedTokens = contentTokens + promptTokens;
 
         if (totalEstimatedTokens > MODEL_CONFIG.maxInputTokens) {
@@ -89,6 +94,7 @@ export const summarizationService = {
         where: { id: fileId },
         data: { summaryStatus: FILE_SUMMARY_STATUS.FAILED },
       });
+
       throw error;
     }
   },
