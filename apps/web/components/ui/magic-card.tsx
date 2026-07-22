@@ -51,7 +51,7 @@ const MagicCard = ({ children, className }: Props) => {
       onMouseLeave={handleMouseLeave}
       className={cn(
         "relative rounded h-full border border-border/60 bg-muted/5  transition-all duration-300 p-4 md:p-6 overflow-hidden",
-        className
+        className,
       )}
     >
       <div

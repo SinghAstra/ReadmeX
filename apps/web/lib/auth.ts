@@ -87,6 +87,7 @@ export const authOptions: NextAuthOptions = {
           token.id = res.data.user.id;
         }
       }
+
       return token;
     },
 
@@ -95,6 +96,7 @@ export const authOptions: NextAuthOptions = {
         session.accessToken = token.accessToken;
         session.user.id = token.id;
       }
+
       return session;
     },
   },

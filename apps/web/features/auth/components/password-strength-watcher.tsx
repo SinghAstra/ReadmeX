@@ -46,6 +46,7 @@ export const PasswordStrengthWatcher = ({
   const getProgressStyles = () => {
     if (rulesMetCount <= 2) return "bg-destructive";
     if (rulesMetCount <= 4) return "bg-amber-500";
+
     return "bg-green-400";
   };
 
@@ -59,14 +60,14 @@ export const PasswordStrengthWatcher = ({
               "transition-colors duration-200 font-semibold",
               rulesMetCount <= 2 && "text-destructive",
               rulesMetCount > 2 && rulesMetCount <= 4 && "text-amber-500",
-              rulesMetCount === 5 && "text-green-400"
+              rulesMetCount === 5 && "text-green-400",
             )}
           >
             {rulesMetCount <= 2
               ? "Weak"
               : rulesMetCount <= 4
-              ? "Medium"
-              : "Strong"}
+                ? "Medium"
+                : "Strong"}
           </span>
         </div>
 
@@ -78,7 +79,7 @@ export const PasswordStrengthWatcher = ({
                 "h-full transition-all duration-300 rounded-xs",
                 index < rulesMetCount
                   ? getProgressStyles()
-                  : "bg-muted-foreground/15"
+                  : "bg-muted-foreground/15",
               )}
             />
           ))}
@@ -91,14 +92,14 @@ export const PasswordStrengthWatcher = ({
             key={index}
             className={cn(
               "flex text-xs items-center gap-2 text-muted-foreground/40 transition-all duration-200",
-              req.met && "text-green-400 font-medium"
+              req.met && "text-green-400 font-medium",
             )}
           >
             {req.met ? (
               <CircleCheck
                 className={cn(
                   "w-3.5 h-3.5 text-primary shrink-0 transition-transform duration-200 scale-105 font-medium",
-                  req.met ? "text-green-400" : "text-foreground"
+                  req.met ? "text-green-400" : "text-foreground",
                 )}
                 strokeWidth={2.5}
               />

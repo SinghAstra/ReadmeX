@@ -7,17 +7,18 @@ export const fileSummarizationWorker = new Worker<FileSummarizationJobData>(
   QUEUE_NAMES.FILE_SUMMARIZATION,
   async (job: Job<FileSummarizationJobData>) => {
     const { fileId, repositoryId, jobId, runId } = job.data;
+
     await summarizationService.processFileSummary(
       fileId,
       repositoryId,
       jobId,
-      runId
+      runId,
     );
   },
   {
     connection: redisConnection,
     concurrency: 10,
-  }
+  },
 );
 
 fileSummarizationWorker.on("failed", (job, error) => {
@@ -25,10 +26,10 @@ fileSummarizationWorker.on("failed", (job, error) => {
 });
 
 fileSummarizationWorker.on("ready", () =>
-  console.log("fileSummarizationWorker ready")
+  console.log("fileSummarizationWorker ready"),
 );
 fileSummarizationWorker.on("active", (job) =>
-  console.log("fileSummarizationWorker active", job.id)
+  console.log("fileSummarizationWorker active", job.id),
 );
 fileSummarizationWorker.on("error", (err) => {
   console.log("fileSummarizationWorker error");

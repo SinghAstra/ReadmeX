@@ -4,7 +4,7 @@ import { getRepositoryAction } from "../actions/get-repo-action";
 import { repoKeys } from "../query-keys";
 
 export const repoQueryFn = async (
-  id: string
+  id: string,
 ): Promise<GetRepositoryResponse> => {
   const response = await getRepositoryAction(id);
 
@@ -16,7 +16,7 @@ export const repoQueryFn = async (
 };
 
 export function useRepository(
-  id: string
+  id: string,
 ): UseQueryResult<GetRepositoryResponse, Error> {
   return useQuery({
     queryKey: repoKeys.detail(id),

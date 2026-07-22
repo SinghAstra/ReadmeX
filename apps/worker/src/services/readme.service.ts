@@ -71,7 +71,7 @@ export const readmeService = {
         message: `Grouping your project files... (${buckets.length} folders found)`,
       });
 
-       for (const bucket of buckets) {
+      for (const bucket of buckets) {
         const fileData = bucket.files
           .map((f) => `File: ${f.path}\nSummary: ${f.summary}`)
           .join("\n\n");

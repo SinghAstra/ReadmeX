@@ -15,6 +15,7 @@ export function CopyReadmeButton({
   const handleCopy = async () => {
     if (!textToCopy) {
       toast.error("No README content to copy!");
+
       return;
     }
 

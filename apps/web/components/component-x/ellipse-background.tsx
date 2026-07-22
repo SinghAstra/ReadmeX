@@ -50,6 +50,7 @@ function EllipseBackground({
 }: EllipseBackgroundProps) {
   const gradientPosition = positionMap[position];
   let backgroundGradientValue;
+
   if (variant === "fade") {
     backgroundGradientValue = `radial-gradient(ellipse ${radiusX}% ${radiusY}% at ${gradientPosition}, ${colorOne} 0%, ${colorTwo} ${transition}%)`;
   } else {
@@ -67,7 +68,7 @@ function EllipseBackground({
     <div
       className={cn(
         "absolute inset-0 overflow-hidden bg-background z-[-1]",
-        className
+        className,
       )}
     >
       <div

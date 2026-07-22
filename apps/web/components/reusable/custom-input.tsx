@@ -46,7 +46,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       rightLabel,
       ...props
     },
-    ref
+    ref,
   ) => {
     let inputType = type;
     let StateSuffixIcon = SuffixIcon;
@@ -78,7 +78,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
             "focus-within:border-primary",
             error &&
               "border-destructive focus-within:border-destructive hover:border-destructive",
-            readonly && "opacity-50 cursor-not-allowed"
+            readonly && "opacity-50 cursor-not-allowed",
           )}
         >
           {(prefixText || PrefixIcon) && (
@@ -86,7 +86,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
               className={cn(
                 "flex items-center pl-3 pr-2 text-sm text-muted-foreground",
                 prefixText && "border-r border-input",
-                error && "text-destructive"
+                error && "text-destructive",
               )}
             >
               {PrefixIcon ? <PrefixIcon className="w-4 h-4" /> : prefixText}
@@ -100,7 +100,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
               "w-full bg-transparent border-none focus-visible:ring-0 shadow-none",
               PrefixIcon || prefixText ? "rounded-l-none pl-0" : "pl-3",
               StateSuffixIcon ? "rounded-r-none pr-0" : "pr-3",
-              "focus-visible:ring-0 focus-visible:ring-offset-0"
+              "focus-visible:ring-0 focus-visible:ring-offset-0",
             )}
             value={value}
             onChange={onChange}
@@ -114,7 +114,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                 "flex items-center pr-3 pl-2 text-muted-foreground",
                 isPassword &&
                   "cursor-pointer hover:text-primary transition-colors",
-                error && "text-destructive"
+                error && "text-destructive",
               )}
               onClick={clickHandler}
             >
@@ -132,7 +132,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 CustomInput.displayName = "CustomInput";

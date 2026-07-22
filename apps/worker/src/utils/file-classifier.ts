@@ -1,10 +1,5 @@
 export type FileCategory =
-  | "CODE"
-  | "CONFIG"
-  | "TRANSLATION"
-  | "DATASET"
-  | "STATIC"
-  | "IGNORED";
+  "CODE" | "CONFIG" | "TRANSLATION" | "DATASET" | "STATIC" | "IGNORED";
 
 interface ClassificationResult {
   category: FileCategory;
@@ -66,7 +61,7 @@ const PATH_STATIC_ASSETS = [
 export function classifyFile(
   relativePath: string,
   fileName: string,
-  content: string
+  content: string,
 ): ClassificationResult {
   const normalizedPath = relativePath.toLowerCase().replace(/\\/g, "/");
   const normalizedName = fileName.toLowerCase();
@@ -75,7 +70,7 @@ export function classifyFile(
     IGNORED_DIRECTORIES.some(
       (dir) =>
         normalizedPath.includes(`/${dir}/`) ||
-        normalizedPath.startsWith(`${dir}/`)
+        normalizedPath.startsWith(`${dir}/`),
     )
   ) {
     return {
@@ -105,6 +100,7 @@ export function classifyFile(
   if (PATH_TRANSLATIONS.some((pattern) => normalizedPath.includes(pattern))) {
     const localeMatch = fileName.match(/^([a-zA-Z]{2,3}([-_][a-zA-Z]{2,4})?)/);
     const localeName = localeMatch ? ` for the [${localeMatch[1]}] locale` : "";
+
     return {
       category: "TRANSLATION",
       shouldSummarizeWithAI: false,
@@ -123,11 +119,13 @@ export function classifyFile(
 
   if (normalizedName.endsWith(".json")) {
     const trimmed = content.trim();
+
     if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
       const isSimpleDictionary =
         trimmed.length > 200 &&
         !trimmed.includes('"type":') &&
         !trimmed.includes('"id":');
+
       if (isSimpleDictionary) {
         return {
           category: "DATASET",

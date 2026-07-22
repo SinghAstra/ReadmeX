@@ -20,7 +20,7 @@ import {
 
 export const repoApi = {
   ingestRepository: (
-    data: IngestRepoInput
+    data: IngestRepoInput,
   ): Promise<ApiResponse<CreateRepoResponse>> => {
     return apiClient.post("/api/repo", data, createRepoResponseSchema);
   },
@@ -34,11 +34,11 @@ export const repoApi = {
   },
 
   getRepositoryFiles: (
-    id: string
+    id: string,
   ): Promise<ApiResponse<GetRepositoryFilesResponse>> => {
     return apiClient.get(
       `/api/repo/${id}/files`,
-      getRepositoryFilesResponseSchema
+      getRepositoryFilesResponseSchema,
     );
   },
 
@@ -46,7 +46,7 @@ export const repoApi = {
     return apiClient.post(
       `/api/repo/${id}/resync`,
       {},
-      resyncRepoResponseSchema
+      resyncRepoResponseSchema,
     );
   },
 
@@ -59,7 +59,7 @@ export const repoApi = {
   },
 
   deleteMultipleRepositories: (
-    ids: string[]
+    ids: string[],
   ): Promise<ApiResponse<DeleteRepoResponse>> => {
     return apiClient.delete("/api/repo/bulk", deleteRepoResponseSchema, {
       body: { ids },

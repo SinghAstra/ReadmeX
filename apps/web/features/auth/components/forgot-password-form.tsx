@@ -33,6 +33,7 @@ export function ForgotPasswordForm() {
         }
         setSentEmail(values.email);
         setSent(true);
+
         return result.data.message;
       },
       error: (err: Error) => err.message,

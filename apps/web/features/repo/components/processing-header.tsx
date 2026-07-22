@@ -18,22 +18,12 @@ import { useRepository } from "@/features/repo/hooks/use-repo";
 import { STATUS_BORDER_MAP } from "@/lib/constants";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import {
-  ExternalLink,
-  GitFork,
-  LogOut,
-  Menu,
-  RotateCcw,
-  User,
-  Zap,
-} from "lucide-react";
+import { ExternalLink, GitFork, LogOut, Menu, User, Zap } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
-
-
 
 export function ProcessingHeader() {
   const { toggleSidebar } = useSidebar();
@@ -47,7 +37,7 @@ export function ProcessingHeader() {
   const isRepoView = !!repositoryId && !!repository;
 
   const { mutateAsync: boostRepo, isPending: isBoosting } = useBoostRepository(
-    repositoryId ?? ""
+    repositoryId ?? "",
   );
 
   const handleBoostExecution = () => {
@@ -63,6 +53,7 @@ export function ProcessingHeader() {
 
   const getUserInitials = () => {
     if (!session?.user?.name) return null;
+
     return session.user.name
       .split(" ")
       .map((word) => word[0])
@@ -98,7 +89,7 @@ export function ProcessingHeader() {
                       alt={`${repository.name} logo`}
                       className={cn(
                         "object-cover",
-                        STATUS_BORDER_MAP[repository.status]
+                        STATUS_BORDER_MAP[repository.status],
                       )}
                     />
                     <AvatarFallback className="rounded bg-primary/10 text-primary border border-primary/10 flex items-center justify-center">
@@ -141,7 +132,7 @@ export function ProcessingHeader() {
                 <Zap
                   className={cn(
                     "size-3.5 sm:size-4 shrink-0",
-                    isBoosting && "animate-bounce fill-current"
+                    isBoosting && "animate-bounce fill-current",
                   )}
                 />
                 <span className="hidden sm:inline">

@@ -4,7 +4,7 @@ interface ResetPasswordTemplateInput {
 }
 
 export function getResetPasswordMailTemplate(
-  input: ResetPasswordTemplateInput
+  input: ResetPasswordTemplateInput,
 ): string {
   const { productName, resetLink } = input;
 

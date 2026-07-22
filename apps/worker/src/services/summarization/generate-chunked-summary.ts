@@ -5,7 +5,7 @@ import { SYSTEM_PROMPT } from "../../prompt";
 export async function generateChunkedSummary(
   runId: number,
   relativePath: string,
-  content: string
+  content: string,
 ): Promise<string> {
   const targetChunkSize = Math.floor(MODEL_CONFIG.maxInputTokens * 3.2);
   const lines = content.split("\n");
@@ -28,10 +28,11 @@ export async function generateChunkedSummary(
   const chunksToProcess = isTruncated ? chunks.slice(0, 2) : chunks;
 
   console.log(
-    `[Run ${runId}] 🧩 File: ${relativePath} split into ${totalOriginalChunks} chunks. Processing: ${chunksToProcess.length} (Truncated: ${isTruncated})`
+    `[Run ${runId}] 🧩 File: ${relativePath} split into ${totalOriginalChunks} chunks. Processing: ${chunksToProcess.length} (Truncated: ${isTruncated})`,
   );
 
   const intermediateSummaries: string[] = [];
+
   for (let i = 0; i < chunksToProcess.length; i++) {
     const chunkResponse = await executeAIRequest(runId, {
       model: MODEL_CONFIG.activeModel,
@@ -46,6 +47,7 @@ export async function generateChunkedSummary(
       ],
     });
     const partialText = chunkResponse?.choices[0]?.message?.content?.trim();
+
     if (partialText) intermediateSummaries.push(partialText);
   }
 

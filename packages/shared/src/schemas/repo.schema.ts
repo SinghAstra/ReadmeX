@@ -87,11 +87,13 @@ export const repositoryTreeNodeSchema: z.ZodType<RepositoryTreeNode> = z.lazy(
       summaryStatus: fileSummaryStatusSchema.optional(),
       summary: z.string().nullable().optional(),
       children: z.array(repositoryTreeNodeSchema),
-    })
+    }),
 );
 
 export type RepositoryStatus = z.infer<typeof repositoryStatusSchema>;
+
 export type FileSummaryStatus = z.infer<typeof fileSummaryStatusSchema>;
+
 export type RepositoryFileData = z.infer<typeof repositoryFileDataSchema>;
 
 const GITHUB_URL_REGEX =
@@ -104,7 +106,7 @@ export const ingestRepoSchema = z.object({
     .url("Please provide a valid absolute web URL.")
     .regex(
       GITHUB_URL_REGEX,
-      "Input must follow a standard public GitHub URL structure (e.g., https://github.com/owner/repo)."
+      "Input must follow a standard public GitHub URL structure (e.g., https://github.com/owner/repo).",
     ),
 });
 
@@ -112,11 +114,13 @@ export type IngestRepoInput = z.infer<typeof ingestRepoSchema>;
 
 export function parseGitHubUrl(url: string): { owner: string; name: string } {
   const match = url.match(GITHUB_URL_REGEX);
+
   if (!match || !match[1] || !match[2]) {
     throw new Error(
-      "INVALID_GITHUB_SIGNATURE: Failed to extract structural parameters."
+      "INVALID_GITHUB_SIGNATURE: Failed to extract structural parameters.",
     );
   }
+
   return { owner: match[1], name: match[2] };
 }
 
@@ -131,6 +135,7 @@ export const deleteMultipleReposInputSchema = z.object({
 });
 
 export type DeleteRepoInput = z.infer<typeof deleteRepoInputSchema>;
+
 export type DeleteMultipleReposInput = z.infer<
   typeof deleteMultipleReposInputSchema
 >;

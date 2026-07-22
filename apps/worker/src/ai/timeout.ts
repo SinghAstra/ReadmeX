@@ -4,7 +4,7 @@
  */
 export function withTimeout<T>(
   promise: Promise<T>,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<T> {
   return Promise.race([
     promise,
@@ -12,8 +12,8 @@ export function withTimeout<T>(
       setTimeout(
         () =>
           reject(new Error("REQUEST_TIMEOUT: AI took too long to respond.")),
-        timeoutMs
-      )
+        timeoutMs,
+      ),
     ),
   ]);
 }

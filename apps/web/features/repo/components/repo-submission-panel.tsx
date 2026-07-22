@@ -30,6 +30,7 @@ export function RepoSubmissionPanel() {
       success: (data) => {
         reset();
         router.push(`/repo/${data.repositoryId}`);
+
         return data.isDuplicate
           ? "Repository already exists. Loading workspace..."
           : "Repository linked! ReadmeX pipeline started.";

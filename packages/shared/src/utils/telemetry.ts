@@ -34,6 +34,6 @@ export async function trackProgress({
 
   await redisConnection.publish(
     channelCoordinate,
-    JSON.stringify(eventPayload)
+    JSON.stringify(eventPayload),
   );
 }

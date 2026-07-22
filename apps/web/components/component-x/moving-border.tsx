@@ -6,13 +6,11 @@ import type React from "react";
 import { CSSProperties } from "react";
 
 export type MovingBorderSpeed = "slow" | "normal" | "fast";
+
 export type MovingBorderDirection = "clockwise" | "counterclockwise";
+
 export type MovingBorderBlendMode =
-  | "normal"
-  | "screen"
-  | "overlay"
-  | "multiply"
-  | "lighten";
+  "normal" | "screen" | "overlay" | "multiply" | "lighten";
 
 export interface MovingBorderProps {
   // Color & appearance
@@ -71,7 +69,7 @@ const MovingBorder = ({
     <div
       className={cn(
         "relative border p-[2px] overflow-hidden rounded",
-        className
+        className,
       )}
     >
       <motion.div

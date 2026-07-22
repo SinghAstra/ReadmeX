@@ -42,6 +42,7 @@ export function SignInForm() {
       }
 
       router.push(callbackUrl);
+
       return "Welcome back!";
     };
 

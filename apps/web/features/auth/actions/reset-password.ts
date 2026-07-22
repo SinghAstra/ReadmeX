@@ -8,7 +8,7 @@ import type {
 import { authApi } from "../api/auth-api";
 
 export async function resetPasswordAction(
-  data: ResetPasswordFormValues
+  data: ResetPasswordFormValues,
 ): Promise<ApiResponse<ResetPasswordResponse>> {
   return authApi.resetPassword(data);
 }

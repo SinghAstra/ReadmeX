@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import type { CSSProperties } from "react";
 
 export type LampBackgroundPosition = "top" | "right" | "bottom" | "left";
+
 export type LampAngleSpan = "small" | "medium" | "large";
 
 interface LampBackgroundProps {
@@ -74,6 +75,7 @@ function LampBackground({
   }
   let angleSpread: number;
   let angleOffset: number;
+
   switch (angleSpan) {
     case "small":
       angleSpread = 60;
@@ -88,12 +90,13 @@ function LampBackground({
       angleOffset = 0;
       break;
   }
+
   return (
     <div
       className={cn(
         "absolute inset-0 flex z-[-1]",
         containerFlexClass,
-        className
+        className,
       )}
       style={{ gap: 0, maskImage: maskImageStyle }}
     >

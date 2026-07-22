@@ -22,6 +22,7 @@ const ContinueWithGoogle = () => {
       setIsGoogleLoading(false);
     }
   };
+
   return (
     <Button
       type="button"

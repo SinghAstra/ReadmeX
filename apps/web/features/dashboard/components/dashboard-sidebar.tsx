@@ -41,7 +41,7 @@ export function DashboardSidebar() {
     return cn(
       "!bg-transparent !text-muted-foreground transition-colors duration-200",
       "hover:!bg-sidebar-accent hover:!text-foreground",
-      isActive && "!bg-sidebar-accent !text-foreground"
+      isActive && "!bg-sidebar-accent !text-foreground",
     );
   };
 
@@ -110,7 +110,7 @@ export function DashboardSidebar() {
                       isActive={isActive}
                       className={cn(
                         getButtonStyles(isActive),
-                        "border border-border/60"
+                        "border border-border/60",
                       )}
                     >
                       <Link

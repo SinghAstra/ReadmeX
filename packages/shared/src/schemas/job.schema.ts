@@ -35,10 +35,13 @@ export const readmeGenerationJobDataSchema = z.object({
 });
 
 export type JobStatus = z.infer<typeof jobStatusSchema>;
+
 export type RepoIngestionJobData = z.infer<typeof repoIngestionJobDataSchema>;
+
 export type FileSummarizationJobData = z.infer<
   typeof fileSummarizationJobDataSchema
 >;
+
 export type ReadmeGenerationJobData = z.infer<
   typeof readmeGenerationJobDataSchema
 >;

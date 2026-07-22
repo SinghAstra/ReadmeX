@@ -5,7 +5,7 @@ import { SYSTEM_PROMPT } from "../../prompt";
 export async function generateSummaryDirectly(
   runId: number,
   relativePath: string,
-  content: string
+  content: string,
 ): Promise<string> {
   const aiResponse = await executeAIRequest(runId, {
     model: MODEL_CONFIG.activeModel,
@@ -17,6 +17,7 @@ export async function generateSummaryDirectly(
       },
     ],
   });
+
   return (
     aiResponse?.choices[0]?.message?.content?.trim() || "No summary written."
   );

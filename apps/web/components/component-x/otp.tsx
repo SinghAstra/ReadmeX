@@ -35,9 +35,11 @@ export function OTPProvider({
 
 export function useOTP() {
   const context = useContext(OTPContext);
+
   if (!context) {
     throw new Error("useOTP must be used within OTPProvider");
   }
+
   return context;
 }
 
@@ -81,6 +83,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
     if (value && !/^\d$/.test(value)) return;
 
     const newValues = [...values];
+
     newValues[index] = value;
     setValues(newValues);
 
@@ -93,6 +96,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace") {
       const newValues = [...values];
+
       newValues[index] = "";
       setValues(newValues);
 
@@ -116,6 +120,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
       .slice(0, values.length - index);
 
     const newValues = [...values];
+
     digits.forEach((digit, i) => {
       newValues[index + i] = digit;
     });
@@ -123,6 +128,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
 
     // Focus last input or next empty input
     const nextEmptyIndex = newValues.findIndex((v, i) => i >= index && !v);
+
     if (nextEmptyIndex !== -1) {
       setFocusIndex(nextEmptyIndex);
     } else {
@@ -156,7 +162,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
         isFocused && "border-primary ring-2 ring-primary/20",
         "active:scale-95",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "touch-manipulation"
+        "touch-manipulation",
       )}
       aria-label={`OTP digit ${index + 1}`}
     />

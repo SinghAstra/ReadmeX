@@ -24,7 +24,7 @@ export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
   const { liveMessages } = useJobLiveStream(
     activeJobId,
     repo.id,
-    session?.accessToken
+    session?.accessToken,
   );
 
   const allTerminalMessages = useMemo(() => {
@@ -40,6 +40,7 @@ export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
     return combined.filter((item) => {
       if (seen.has(item.message)) return false;
       seen.add(item.message);
+
       return true;
     });
   }, [jobData?.logs, liveMessages]);

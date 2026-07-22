@@ -46,6 +46,7 @@ export async function trackQueueLength(currentLength: number): Promise<void> {
 
 export async function resetClusterMetrics(): Promise<void> {
   const keys = await redisConnection.keys("groq:metrics:*");
+
   if (keys.length > 0) {
     await redisConnection.del(...keys);
   }
@@ -73,9 +74,11 @@ export async function fetchClusterTelemetry(): Promise<ClusterMetricsSummary> {
 
   for (const keyPath of keyUsageKeys) {
     const indexPart = keyPath.split(":").pop();
+
     if (indexPart !== undefined) {
       const idx = parseInt(indexPart, 10);
       const val = await redisConnection.get(keyPath);
+
       requestsPerKey[idx] = val ? parseInt(val, 10) : 0;
     }
   }

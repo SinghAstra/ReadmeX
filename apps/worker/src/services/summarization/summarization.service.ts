@@ -15,7 +15,7 @@ export const summarizationService = {
     fileId: string,
     repositoryId: string,
     jobId: string,
-    runId: number
+    runId: number,
   ) {
     const file = await prisma.repositoryFile.findUnique({
       where: { id: fileId },
@@ -26,7 +26,7 @@ export const summarizationService = {
 
     if (!file || !repo) {
       throw new Error(
-        `SUMMARIZATION_ERROR: Missing records for File: ${fileId} or Repo: ${repositoryId}`
+        `SUMMARIZATION_ERROR: Missing records for File: ${fileId} or Repo: ${repositoryId}`,
       );
     }
 
@@ -44,7 +44,7 @@ export const summarizationService = {
       const classification = classifyFile(
         file.relativePath,
         path.basename(file.relativePath),
-        fileContent
+        fileContent,
       );
 
       let summaryText = "";
@@ -52,7 +52,7 @@ export const summarizationService = {
       if (!classification.shouldSummarizeWithAI) {
         summaryText = classification.staticSummary;
         console.log(
-          `[Run ${runId}] ⚡ FAST-TRACK | Bypassed AI overhead for ${classification.category} resource: ${file.relativePath}`
+          `[Run ${runId}] ⚡ FAST-TRACK | Bypassed AI overhead for ${classification.category} resource: ${file.relativePath}`,
         );
       } else {
         const contentTokens = estimateTokenCount(fileContent);
@@ -64,13 +64,13 @@ export const summarizationService = {
           summaryText = await generateChunkedSummary(
             runId,
             file.relativePath,
-            fileContent
+            fileContent,
           );
         } else {
           summaryText = await generateSummaryDirectly(
             runId,
             file.relativePath,
-            fileContent
+            fileContent,
           );
         }
       }
@@ -93,9 +93,3 @@ export const summarizationService = {
     }
   },
 };
-
-
-
-
-
-

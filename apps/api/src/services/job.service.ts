@@ -16,7 +16,7 @@ export const jobService = {
     if (!job) {
       throw new NotFoundError(
         COMMON_ERROR_CODES.RESOURCE_NOT_FOUND,
-        "Job not found."
+        "Job not found.",
       );
     }
 

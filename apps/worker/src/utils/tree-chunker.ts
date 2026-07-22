@@ -69,7 +69,7 @@ export interface ChunkOptions {
 
 export function chunkTreeIntoBuckets(
   files: FileNode[],
-  options: ChunkOptions
+  options: ChunkOptions,
 ): Bucket[] {
   const rootNode = buildVirtualTree(files);
   const finalBuckets: Bucket[] = [];
@@ -94,6 +94,7 @@ export function chunkTreeIntoBuckets(
 
     for (const childNode of node.children.values()) {
       const result = traverse(childNode);
+
       unBucketedFiles.push(...result.unBucketedFiles);
       unBucketedTokens += result.unBucketedTokens;
     }
@@ -111,6 +112,7 @@ export function chunkTreeIntoBuckets(
         tokenCount: unBucketedTokens,
         files: unBucketedFiles,
       });
+
       return {
         unBucketedFiles: [],
         unBucketedTokens: 0,
@@ -120,7 +122,7 @@ export function chunkTreeIntoBuckets(
       let currentChunkTokens = 0;
       let partNumber = 1;
 
-      for (let file of unBucketedFiles) {
+      for (const file of unBucketedFiles) {
         if (currentChunkTokens + file.tokens > options.maxTokens) {
           const displayPath = node.path === "" ? "Root Directory" : node.path;
 
@@ -137,6 +139,7 @@ export function chunkTreeIntoBuckets(
         currentChunkFiles.push(file);
         currentChunkTokens = currentChunkTokens + file.tokens;
       }
+
       return {
         unBucketedFiles: currentChunkFiles,
         unBucketedTokens: currentChunkTokens,

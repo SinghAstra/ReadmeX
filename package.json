@@ -11,8 +11,11 @@
     "lint": "turbo lint"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.0.0",
+    "eslint": "^9.39.4",
     "turbo": "^2.9.18",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0"
   }
 }

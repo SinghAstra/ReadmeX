@@ -6,7 +6,7 @@ import { jwtTokenEngine } from "../lib/jwt.js";
 export const authMiddleware = async (
   req: Request,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const authHeader = req.headers.authorization;
@@ -14,23 +14,25 @@ export const authMiddleware = async (
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new UnauthorizedError(
         AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-        "Please sign in to access this resource."
+        "Please sign in to access this resource.",
       );
     }
 
     const token = authHeader.split(" ")[1];
+
     if (!token) {
       throw new UnauthorizedError(
         AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-        "Please sign in to access this resource."
+        "Please sign in to access this resource.",
       );
     }
 
     const payload = jwtTokenEngine.verifyAccessToken(token);
+
     if (!payload) {
       throw new UnauthorizedError(
         AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-        "Your session has expired. Please sign in again."
+        "Your session has expired. Please sign in again.",
       );
     }
 

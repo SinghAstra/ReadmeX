@@ -12,6 +12,7 @@ const ALL_ERROR_CODES = [
 ] as [string, ...string[]];
 
 export const errorCodeSchema = z.enum(ALL_ERROR_CODES);
+
 export type ErrorCode = z.infer<typeof errorCodeSchema>;
 
 export const apiErrorSchema = z.object({
@@ -22,7 +23,7 @@ export const apiErrorSchema = z.object({
 export type ApiError = z.infer<typeof apiErrorSchema>;
 
 export function createApiResponseSchema<T extends z.ZodTypeAny>(
-  payloadSchema: T
+  payloadSchema: T,
 ) {
   return z.discriminatedUnion("success", [
     z.object({

@@ -17,7 +17,7 @@ async function request<T>(
   method: string,
   path: string,
   payloadSchema: z.ZodType<T>,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<ApiResponse<T>> {
   const baseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -26,8 +26,10 @@ async function request<T>(
   const { body, ...restOptions } = options;
 
   let authorizationHeader: Record<string, string> = {};
+
   try {
     const session = await getServerSession(authOptions);
+
     if (session) {
       authorizationHeader = {
         Authorization: `Bearer ${session.accessToken}`,
@@ -55,10 +57,12 @@ async function request<T>(
     const response = await fetch(url, fetchOptions);
 
     let json: unknown;
+
     try {
       json = await response.json();
     } catch (error) {
       logError(error);
+
       return {
         success: false,
         error: {
@@ -70,6 +74,7 @@ async function request<T>(
     }
 
     const responseEnvelopeSchema = createApiResponseSchema(payloadSchema);
+
     return responseEnvelopeSchema.parse(json);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -86,6 +91,7 @@ async function request<T>(
     }
 
     logError(error);
+
     return {
       success: false,
       error: {
@@ -105,14 +111,14 @@ export const apiClient = {
     path: string,
     body: unknown,
     schema: z.ZodType<T>,
-    options?: RequestOptions
+    options?: RequestOptions,
   ) => request<T>("POST", path, schema, { ...options, body }),
 
   put: <T>(
     path: string,
     body: unknown,
     schema: z.ZodType<T>,
-    options?: RequestOptions
+    options?: RequestOptions,
   ) => request<T>("PUT", path, schema, { ...options, body }),
 
   delete: <T>(path: string, schema: z.ZodType<T>, options?: RequestOptions) =>

@@ -71,16 +71,17 @@ export const webEnvSchema = baseSchema.extend({
 function validate<T>(
   schema: z.Schema<T>,
   envData: unknown,
-  appName: string
+  appName: string,
 ): T {
   const result = schema.safeParse(envData);
 
   if (!result.success) {
     console.error(
-      `\n❌ [${appName.toUpperCase()}] CRITICAL: Invalid environment configuration:`
+      `\n❌ [${appName.toUpperCase()}] CRITICAL: Invalid environment configuration:`,
     );
 
     const formattedErrors = result.error.format();
+
     for (const [key, value] of Object.entries(formattedErrors)) {
       if (key !== "_errors" && value && "_errors" in value) {
         console.error(`   👉 ${key}: ${value._errors.join(", ")}`);

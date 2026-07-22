@@ -1,12 +1,11 @@
 import { COMMON_ERROR_CODES, logError } from "@repo/shared";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { AppError } from "../errors/api-errors.js";
 
 export const globalErrorHandler = (
   error: Error,
   _req: Request,
   res: Response,
-  _next: NextFunction
 ) => {
   if (error instanceof AppError) {
     res.status(error.statusCode).json({
@@ -16,6 +15,7 @@ export const globalErrorHandler = (
         message: error.message,
       },
     });
+
     return;
   }
 

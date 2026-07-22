@@ -36,6 +36,7 @@ export function ResetPasswordForm() {
           throw new Error(result.error.message);
         }
         router.push(ROUTES.SIGN_IN);
+
         return result.data.message;
       },
       error: (err: Error) => err.message,
