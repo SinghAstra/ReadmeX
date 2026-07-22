@@ -1,6 +1,7 @@
 import { MODEL_CONFIG } from "../../ai/model-config";
 import { executeAIRequest } from "../../ai/request-manager";
 import { SYSTEM_PROMPT } from "../../prompt";
+import { withSlowLog } from "../../utils/performance";
 
 export async function generateChunkedSummary(
   runId: number,
@@ -40,18 +41,22 @@ export async function generateChunkedSummary(
   const intermediateSummaries: string[] = [];
 
   for (let i = 0; i < chunksToProcess.length; i++) {
-    const chunkResponse = await executeAIRequest(runId, {
-      model: MODEL_CONFIG.activeModel,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
-        {
-          role: "user",
-          content: `Summary step (${i + 1}/${
-            chunksToProcess.length
-          }) for "${relativePath}":\n\nCode:\n${chunksToProcess[i]}`,
-        },
-      ],
-    });
+    const chunkResponse = await withSlowLog(
+      `AI Gen Chunk (${i + 1}/${chunksToProcess.length}): ${relativePath}`,
+      25000,
+      executeAIRequest(runId, {
+        model: MODEL_CONFIG.activeModel,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
+          {
+            role: "user",
+            content: `Summary step (${i + 1}/${
+              chunksToProcess.length
+            }) for "${relativePath}":\n\nCode:\n${chunksToProcess[i]}`,
+          },
+        ],
+      }),
+    );
 
     const partialText = chunkResponse?.choices[0]?.message?.content?.trim();
 
@@ -62,16 +67,20 @@ export async function generateChunkedSummary(
     .map((s, idx) => `Segment ${idx + 1} Summary: ${s}`)
     .join("\n\n");
 
-  const reductionResponse = await executeAIRequest(runId, {
-    model: MODEL_CONFIG.activeModel,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
-      {
-        role: "user",
-        content: `Synthesize these partial summaries into one cohesive overview explaining why "${relativePath}" exists and its overall responsibility:\n\n${unifiedPayload}`,
-      },
-    ],
-  });
+  const reductionResponse = await withSlowLog(
+    `AI Gen Reduction/Synthesize: ${relativePath}`,
+    25000,
+    executeAIRequest(runId, {
+      model: MODEL_CONFIG.activeModel,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
+        {
+          role: "user",
+          content: `Synthesize these partial summaries into one cohesive overview explaining why "${relativePath}" exists and its overall responsibility:\n\n${unifiedPayload}`,
+        },
+      ],
+    }),
+  );
 
   let finalSummary =
     reductionResponse?.choices[0]?.message?.content?.trim() ||
