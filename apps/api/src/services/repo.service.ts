@@ -11,11 +11,7 @@ import {
   REPOSITORY_STATUS,
   RepositoryTreeNode,
 } from "@repo/shared";
-import {
-  fileSummarizationQueue,
-  repositoryIngestionQueue,
-  trackProgress,
-} from "@repo/shared/server";
+import { repositoryIngestionQueue, trackProgress } from "@repo/shared/server";
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import { BadRequestError, NotFoundError } from "../errors/api-errors.js";
@@ -47,7 +43,7 @@ export const repositoryService = {
     } catch {
       throw new BadRequestError(
         COMMON_ERROR_CODES.SCHEMA_MISMATCH,
-        "Invalid GitHub URL format.",
+        "Invalid GitHub URL format."
       );
     }
 
@@ -74,7 +70,7 @@ export const repositoryService = {
     } catch {
       throw new BadRequestError(
         REPO_ERROR_CODES.REPOSITORY_UNREACHABLE,
-        "Repository unreachable or private.",
+        "Repository unreachable or private."
       );
     }
 
@@ -105,7 +101,6 @@ export const repositoryService = {
     await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
       jobId: job.id,
       repositoryId: newRepo.id,
-      isResync: false,
     });
 
     return { repositoryId: newRepo.id, isDuplicate: false };
@@ -113,7 +108,7 @@ export const repositoryService = {
 
   async getRepositoryFiles(
     id: string,
-    userId: string,
+    userId: string
   ): Promise<RepositoryTreeNode[]> {
     const repo = await prisma.repository.findFirst({
       where: { id, userId },
@@ -122,7 +117,7 @@ export const repositoryService = {
     if (!repo) {
       throw new NotFoundError(
         COMMON_ERROR_CODES.ROUTE_NOT_FOUND,
-        "Repository not found.",
+        "Repository not found."
       );
     }
 
@@ -139,17 +134,17 @@ export const repositoryService = {
       console.log(
         `⚙️ [DB-Explorer Debug] Found incomplete file summaries (${
           flatFiles.filter((f) => f.summaryStatus !== "COMPLETED").length
-        } total remaining). Showing up to 10 items:`,
+        } total remaining). Showing up to 10 items:`
       );
 
       incompleteSamples.forEach((file) => {
         console.log(
-          `  ↳ 📄 Path: ${file.relativePath} | Status: [${file.summaryStatus}]`,
+          `  ↳ 📄 Path: ${file.relativePath} | Status: [${file.summaryStatus}]`
         );
       });
     } else {
       console.log(
-        `⚙️ [DB-Explorer Debug] All file summaries for repository ${id} are completely processed!`,
+        `⚙️ [DB-Explorer Debug] All file summaries for repository ${id} are completely processed!`
       );
     }
 
@@ -158,7 +153,7 @@ export const repositoryService = {
 
   async getRepositoryDetail(
     id: string,
-    userId: string,
+    userId: string
   ): Promise<GetRepositoryResponse> {
     const repo = await prisma.repository.findFirst({
       where: { id, userId },
@@ -174,7 +169,7 @@ export const repositoryService = {
     if (!repo) {
       throw new NotFoundError(
         COMMON_ERROR_CODES.ROUTE_NOT_FOUND,
-        "Repository not found or access denied.",
+        "Repository not found or access denied."
       );
     }
 
@@ -199,7 +194,7 @@ export const repositoryService = {
   },
 
   async getRepositoriesByUserId(
-    userId: string,
+    userId: string
   ): Promise<GetRepositoriesResponse> {
     const records = await prisma.repository.findMany({
       where: { userId },
@@ -228,7 +223,7 @@ export const repositoryService = {
 
   async resyncRepository(
     id: string,
-    userId: string,
+    userId: string
   ): Promise<{ jobId: string }> {
     const repo = await prisma.repository.findFirst({
       where: { id, userId },
@@ -237,7 +232,7 @@ export const repositoryService = {
     if (!repo) {
       throw new NotFoundError(
         COMMON_ERROR_CODES.ROUTE_NOT_FOUND,
-        "Repository not found.",
+        "Repository not found."
       );
     }
 
@@ -256,7 +251,6 @@ export const repositoryService = {
     await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
       jobId: job.id,
       repositoryId: id,
-      isResync: true,
     });
 
     return { jobId: job.id };
@@ -276,7 +270,7 @@ export const repositoryService = {
     if (!repo) {
       throw new NotFoundError(
         COMMON_ERROR_CODES.ROUTE_NOT_FOUND,
-        "Repository not found.",
+        "Repository not found."
       );
     }
 
@@ -317,7 +311,7 @@ export const repositoryService = {
     const newJob = await prisma.job.create({
       data: {
         repositoryId: id,
-        status: JOB_STATUS.PENDING,
+        status: JOB_STATUS.RUNNING,
       },
     });
 
@@ -328,43 +322,41 @@ export const repositoryService = {
       message: "Starting Repository Boost...",
     });
 
-    await prisma.$transaction([
-      ...(latestJob && latestJob.status === JOB_STATUS.RUNNING
-        ? [
-            prisma.job.update({
-              where: { id: latestJob.id },
-              data: { status: JOB_STATUS.CANCELLED, cancelledAt: new Date() },
-            }),
-          ]
-        : []),
-      prisma.repositoryFile.updateMany({
-        where: {
-          repositoryId: id,
-          summaryStatus: {
-            not: FILE_SUMMARY_STATUS.COMPLETED,
-          },
-        },
-        data: {
-          summaryStatus: FILE_SUMMARY_STATUS.PENDING,
-          retryCount: 0,
-          lastError: null,
-        },
-      }),
-    ]);
+    if (latestJob && latestJob.status === JOB_STATUS.RUNNING) {
+      await prisma.job.update({
+        where: { id: latestJob.id },
+        data: { status: JOB_STATUS.CANCELLED, cancelledAt: new Date() },
+      });
+    }
 
-    const runId = Math.floor(Math.random() * 100000);
+    const fileIdsToBoost = incompleteFiles.map((f) => f.id);
 
-    await fileSummarizationQueue.addBulk(
-      incompleteFiles.map((file, idx) => ({
-        name: JOB_NAMES.SUMMARIZE_FILE,
-        data: {
-          fileId: file.id,
-          repositoryId: id,
-          jobId: newJob.id,
-          runId: runId + idx,
-        },
-      })),
-    );
+    console.log("fileIdsToBoost is ", fileIdsToBoost.length);
+
+    const updatedRepoFiles = await prisma.repositoryFile.updateMany({
+      where: {
+        id: { in: fileIdsToBoost },
+      },
+      data: {
+        summaryStatus: FILE_SUMMARY_STATUS.PENDING,
+        retryCount: 0,
+        lastError: null,
+      },
+    });
+
+    console.log("updatedRepoFiles is ", updatedRepoFiles.count);
+
+    await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
+      jobId: newJob.id,
+      repositoryId: id,
+    });
+
+    await trackProgress({
+      jobId: newJob.id,
+      repositoryId: id,
+      status: JOB_STATUS.RUNNING,
+      message: `Re-syncing workspace and queueing ${updatedRepoFiles.count} files for AI analysis...`,
+    });
 
     return { jobId: newJob.id };
   },
@@ -377,7 +369,7 @@ export const repositoryService = {
     if (!repo) {
       throw new NotFoundError(
         REPO_ERROR_CODES.REPO_NOT_FOUND,
-        "Repository not found or access denied.",
+        "Repository not found or access denied."
       );
     }
 
@@ -409,7 +401,7 @@ export const repositoryService = {
       fs.rm(repo.diskPath, { recursive: true, force: true }).catch((err) => {
         console.error(
           `⚠️ Failed to clear bulk disk path for repository asset ${repo.id}:`,
-          err,
+          err
         );
       });
     }

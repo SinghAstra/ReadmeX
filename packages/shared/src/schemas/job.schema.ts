@@ -19,7 +19,6 @@ export const jobStatusSchema = z.enum([
 export const repoIngestionJobDataSchema = z.object({
   jobId: z.uuid(),
   repositoryId: z.string().uuid(),
-  isResync: z.boolean(),
 });
 
 export const fileSummarizationJobDataSchema = z.object({
