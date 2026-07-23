@@ -3,10 +3,11 @@ import { JOB_STATUS, logError, REPOSITORY_STATUS } from "@repo/shared";
 import { trackProgress } from "@repo/shared/server";
 import { getWorkspacePath } from "../../utils/workspace";
 import { readmeService } from "../readme.service";
-import { TraversalStats, traverseDirectory } from "./traverse-directory";
-import { syncWorkspaceToDatabase } from "./sync-database";
+import { traverseDirectory } from "./traverse-directory";
 import { queueFilesForSummarization } from "./queue-summarization";
 import { syncWorkspace } from "./sync-workspace";
+import { syncDatabaseWithFiles } from "./sync-database";
+import { TraversalStats } from "./types";
 
 export const ingestionService = {
   async processRepositoryIngestion(jobId: string) {
@@ -56,7 +57,7 @@ export const ingestionService = {
       await traverseDirectory(workspacePath, workspacePath, stats);
 
       const { addedCount, modifiedCount, deletedCount } =
-        await syncWorkspaceToDatabase(repo.id, stats);
+        await syncDatabaseWithFiles(repo.id, stats);
 
       await trackProgress({
         jobId,

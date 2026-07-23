@@ -1,34 +1,60 @@
 import { prisma } from "@repo/db";
 import { FILE_SUMMARY_STATUS, REPOSITORY_STATUS } from "@repo/shared";
-import { TraversalStats } from "./traverse-directory.js";
+import { TraversalStats } from "./types";
 
-export async function syncWorkspaceToDatabase(
+export async function syncDatabaseWithFiles(
   repoId: string,
-  stats: TraversalStats,
+  stats: TraversalStats
 ) {
+  console.log(`\n🔄 [SyncDB] Starting synchronization for repo: ${repoId}`);
+
   const existingDBFiles = await prisma.repositoryFile.findMany({
     where: { repositoryId: repoId },
   });
 
-  const dbFileMap = new Map(existingDBFiles.map((f) => [f.relativePath, f]));
-
-  const fsPaths = new Set(stats.collectedFiles.map((f) => f.relativePath));
-
-  const addedFiles = stats.collectedFiles.filter(
-    (f) => !dbFileMap.has(f.relativePath),
+  console.log(
+    `📊 [SyncDB] Found ${existingDBFiles.length} existing files in the database.`
   );
 
-  const modifiedFiles = stats.collectedFiles.filter((f) => {
-    const match = dbFileMap.get(f.relativePath);
+  const dbFileMap = new Map(
+    existingDBFiles.map((f) => [f.relativePath.replace(/\\/g, "/"), f])
+  );
+
+  const scannedFiles = stats.collectedFiles.map((f) => ({
+    ...f,
+    normalizedPath: f.relativePath.replace(/\\/g, "/"),
+  }));
+
+  console.log(
+    `📂 [SyncDB] Scanned ${scannedFiles.length} valid files from the filesystem.`
+  );
+
+  const fsPaths = new Set(scannedFiles.map((f) => f.normalizedPath));
+
+  const addedFiles = scannedFiles.filter(
+    (f) => !dbFileMap.has(f.normalizedPath)
+  );
+
+  const modifiedFiles = scannedFiles.filter((f) => {
+    const match = dbFileMap.get(f.normalizedPath);
 
     return match && match.hash !== f.hash;
   });
 
   const deletedFiles = existingDBFiles.filter(
-    (f) => !fsPaths.has(f.relativePath),
+    (f) => !fsPaths.has(f.relativePath.replace(/\\/g, "/"))
   );
 
-  await prisma.$transaction([
+  console.log(`🧮 [SyncDB] Diff Calculation Results:`);
+
+  console.log(`   - ➕ Added:    ${addedFiles.length}`);
+
+  console.log(`   - 📝 Modified: ${modifiedFiles.length}`);
+
+  console.log(`   - ❌ Deleted:  ${deletedFiles.length}`);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transactionOperations: any[] = [
     prisma.repository.update({
       where: { id: repoId },
       data: {
@@ -40,49 +66,53 @@ export async function syncWorkspaceToDatabase(
         totalSize: stats.totalSize,
       },
     }),
-    ...(deletedFiles.length > 0
-      ? [
-          prisma.repositoryFile.deleteMany({
-            where: { id: { in: deletedFiles.map((f) => f.id) } },
-          }),
-        ]
-      : []),
-    ...(addedFiles.length > 0
-      ? [
-          prisma.repositoryFile.createMany({
-            data: addedFiles.map((file) => ({
-              repositoryId: repoId,
-              relativePath: file.relativePath,
-              extension: file.extension,
-              size: file.size,
-              hash: file.hash,
-              summaryStatus: FILE_SUMMARY_STATUS.PENDING,
-            })),
-            skipDuplicates: true,
-          }),
-        ]
-      : []),
-  ]);
+  ];
 
-  const CHUNK_SIZE = 100;
-
-  for (let i = 0; i < modifiedFiles.length; i += CHUNK_SIZE) {
-    const chunk = modifiedFiles.slice(i, i + CHUNK_SIZE);
-
-    await Promise.all(
-      chunk.map((file) =>
-        prisma.repositoryFile.updateMany({
-          where: { repositoryId: repoId, relativePath: file.relativePath },
-          data: {
-            hash: file.hash,
-            size: file.size,
-            summary: null,
-            summaryStatus: FILE_SUMMARY_STATUS.PENDING,
-          },
-        }),
-      ),
+  if (deletedFiles.length > 0) {
+    transactionOperations.push(
+      prisma.repositoryFile.deleteMany({
+        where: { id: { in: deletedFiles.map((f) => f.id) } },
+      })
     );
   }
+
+  if (addedFiles.length > 0) {
+    transactionOperations.push(
+      prisma.repositoryFile.createMany({
+        data: addedFiles.map((file) => ({
+          repositoryId: repoId,
+          relativePath: file.relativePath,
+          extension: file.extension,
+          size: file.size,
+          hash: file.hash,
+          summaryStatus: FILE_SUMMARY_STATUS.PENDING,
+        })),
+        skipDuplicates: true,
+      })
+    );
+  }
+
+  modifiedFiles.forEach((file) => {
+    transactionOperations.push(
+      prisma.repositoryFile.updateMany({
+        where: { repositoryId: repoId, relativePath: file.relativePath },
+        data: {
+          hash: file.hash,
+          size: file.size,
+          summary: null,
+          summaryStatus: FILE_SUMMARY_STATUS.PENDING,
+        },
+      })
+    );
+  });
+
+  console.log(
+    `⚙️ [SyncDB] Executing Prisma transaction with ${transactionOperations.length} queries...`
+  );
+
+  await prisma.$transaction(transactionOperations);
+
+  console.log(`✅ [SyncDB] Transaction completed successfully.`);
 
   return {
     addedCount: addedFiles.length,

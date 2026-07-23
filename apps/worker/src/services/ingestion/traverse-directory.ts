@@ -1,35 +1,20 @@
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { TraversalStats } from "./types";
 import { IGNORED_DIRECTORIES, SUPPORTED_EXTENSIONS } from "./constants";
-import crypto from "node:crypto";
-
-export interface TraversalStats {
-  totalFiles: number;
-  supportedFiles: number;
-  ignoredFiles: number;
-  totalFolders: number;
-  totalSize: bigint;
-  collectedFiles: Array<{
-    relativePath: string;
-    extension: string;
-    size: number;
-    hash: string;
-  }>;
-}
 
 export async function traverseDirectory(
   basePath: string,
   currentPath: string,
-  stats: TraversalStats,
-) {
+  stats: TraversalStats
+): Promise<void> {
   const entries = await fs.readdir(currentPath, { withFileTypes: true });
 
   for (const entry of entries) {
     const fullPath = path.join(currentPath, entry.name);
 
-    const rawRelativePath = path.relative(basePath, fullPath);
-
-    const normalizedRelativePath = rawRelativePath.split(path.sep).join("/");
+    const relativePath = path.relative(basePath, fullPath);
 
     if (entry.isDirectory()) {
       if (IGNORED_DIRECTORIES.has(entry.name)) {
@@ -65,7 +50,7 @@ export async function traverseDirectory(
       const hash = crypto.createHash("sha256").update(content).digest("hex");
 
       stats.collectedFiles.push({
-        relativePath: normalizedRelativePath,
+        relativePath,
         extension: ext,
         size: fileSize,
         hash,
