@@ -8,6 +8,8 @@ export const repositoryIngestionWorker = new Worker<RepoIngestionJobData>(
   async (job: Job<RepoIngestionJobData>) => {
     const { jobId } = job.data;
 
+    console.log("Inside IngestionWorker");
+
     await ingestionService.processRepositoryIngestion(jobId);
   },
   {

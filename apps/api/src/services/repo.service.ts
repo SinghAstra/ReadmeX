@@ -98,10 +98,17 @@ export const repositoryService = {
       },
     });
 
-    await repositoryIngestionQueue.add(JOB_NAMES.ANALYZE_REPO, {
-      jobId: job.id,
-      repositoryId: newRepo.id,
-    });
+    const queueJob = await repositoryIngestionQueue.add(
+      JOB_NAMES.ANALYZE_REPO,
+      {
+        jobId: job.id,
+        repositoryId: newRepo.id,
+      }
+    );
+
+    console.log(
+      `[API Queue Add] Job queued successfully! Queue Job ID: ${queueJob.id} for DB Job: ${job.id}`
+    );
 
     return { repositoryId: newRepo.id, isDuplicate: false };
   },
