@@ -3,13 +3,13 @@ import { JOB_STATUS, logError, REPOSITORY_STATUS } from "@repo/shared";
 import { trackProgress } from "@repo/shared/server";
 import { getWorkspacePath } from "../../utils/workspace";
 import { readmeService } from "../readme.service";
-import { cloneRepository } from "./clone-repository";
 import { TraversalStats, traverseDirectory } from "./traverse-directory";
 import { syncWorkspaceToDatabase } from "./sync-database";
 import { queueFilesForSummarization } from "./queue-summarization";
+import { syncWorkspace } from "./sync-workspace";
 
 export const ingestionService = {
-  async processRepositoryIngestion(jobId: string, isResync = false) {
+  async processRepositoryIngestion(jobId: string) {
     const job = await prisma.job.findUnique({ where: { id: jobId } });
 
     if (!job) return;
@@ -35,7 +35,7 @@ export const ingestionService = {
         message: "Synchronizing workspace...",
       });
 
-      await cloneRepository(workspacePath, repo.githubUrl, isResync);
+      await syncWorkspace(workspacePath, repo.githubUrl);
 
       await trackProgress({
         jobId,
