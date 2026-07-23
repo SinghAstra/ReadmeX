@@ -14,7 +14,7 @@ export async function traverseDirectory(
   for (const entry of entries) {
     const fullPath = path.join(currentPath, entry.name);
 
-    const relativePath = path.relative(basePath, fullPath);
+    const relativePath = path.relative(basePath, fullPath).replace(/\\/g, "/");
 
     if (entry.isDirectory()) {
       if (IGNORED_DIRECTORIES.has(entry.name)) {
@@ -45,9 +45,16 @@ export async function traverseDirectory(
 
       stats.totalSize += BigInt(fileSize);
 
-      const content = await fs.readFile(fullPath);
+      const rawBuffer = await fs.readFile(fullPath);
 
-      const hash = crypto.createHash("sha256").update(content).digest("hex");
+      const normalizedContent = rawBuffer
+        .toString("utf-8")
+        .replace(/\r\n/g, "\n");
+
+      const hash = crypto
+        .createHash("sha256")
+        .update(normalizedContent)
+        .digest("hex");
 
       stats.collectedFiles.push({
         relativePath,

@@ -6,14 +6,14 @@ export async function syncDatabaseWithFiles(
   repoId: string,
   stats: TraversalStats
 ) {
-  console.log(`\n🔄 [SyncDB] Starting synchronization for repo: ${repoId}`);
+  console.log(`\n🔄 Starting synchronization for repo: ${repoId}`);
 
   const existingDBFiles = await prisma.repositoryFile.findMany({
     where: { repositoryId: repoId },
   });
 
   console.log(
-    `📊 [SyncDB] Found ${existingDBFiles.length} existing files in the database.`
+    `📊 Found ${existingDBFiles.length} existing files in the database.`
   );
 
   const dbFileMap = new Map(
@@ -26,7 +26,7 @@ export async function syncDatabaseWithFiles(
   }));
 
   console.log(
-    `📂 [SyncDB] Scanned ${scannedFiles.length} valid files from the filesystem.`
+    `📂 Scanned ${scannedFiles.length} valid files from the filesystem.`
   );
 
   const fsPaths = new Set(scannedFiles.map((f) => f.normalizedPath));
@@ -45,7 +45,7 @@ export async function syncDatabaseWithFiles(
     (f) => !fsPaths.has(f.relativePath.replace(/\\/g, "/"))
   );
 
-  console.log(`🧮 [SyncDB] Diff Calculation Results:`);
+  console.log(`🧮 Diff Calculation Results:`);
 
   console.log(`   - ➕ Added:    ${addedFiles.length}`);
 
@@ -53,48 +53,59 @@ export async function syncDatabaseWithFiles(
 
   console.log(`   - ❌ Deleted:  ${deletedFiles.length}`);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const transactionOperations: any[] = [
-    prisma.repository.update({
-      where: { id: repoId },
-      data: {
-        status: REPOSITORY_STATUS.PROCESSING,
-        totalFiles: stats.totalFiles,
-        supportedFiles: stats.supportedFiles,
-        ignoredFiles: stats.ignoredFiles,
-        totalFolders: stats.totalFolders,
-        totalSize: stats.totalSize,
-      },
-    }),
-  ];
+  console.log(`⚙️ Executing database operations sequentially...`);
+
+  const repoUpdateResult = await prisma.repository.update({
+    where: { id: repoId },
+    data: {
+      status: REPOSITORY_STATUS.PROCESSING,
+      totalFiles: stats.totalFiles,
+      supportedFiles: stats.supportedFiles,
+      ignoredFiles: stats.ignoredFiles,
+      totalFolders: stats.totalFolders,
+      totalSize: stats.totalSize,
+    },
+  });
+
+  console.log(`✅ Repository stats updated for ID: ${repoUpdateResult.id}`);
 
   if (deletedFiles.length > 0) {
-    transactionOperations.push(
-      prisma.repositoryFile.deleteMany({
-        where: { id: { in: deletedFiles.map((f) => f.id) } },
-      })
+    const deleteResult = await prisma.repositoryFile.deleteMany({
+      where: { id: { in: deletedFiles.map((f) => f.id) } },
+    });
+
+    console.log(
+      `✅ Deleted ${deleteResult.count} outdated files from the database.`
     );
   }
 
   if (addedFiles.length > 0) {
-    transactionOperations.push(
-      prisma.repositoryFile.createMany({
-        data: addedFiles.map((file) => ({
-          repositoryId: repoId,
-          relativePath: file.relativePath,
-          extension: file.extension,
-          size: file.size,
-          hash: file.hash,
-          summaryStatus: FILE_SUMMARY_STATUS.PENDING,
-        })),
-        skipDuplicates: true,
-      })
+    const createResult = await prisma.repositoryFile.createMany({
+      data: addedFiles.map((file) => ({
+        repositoryId: repoId,
+        relativePath: file.relativePath,
+        extension: file.extension,
+        size: file.size,
+        hash: file.hash,
+        summaryStatus: FILE_SUMMARY_STATUS.PENDING,
+      })),
+      skipDuplicates: true,
+    });
+
+    console.log(
+      `✅ Inserted ${createResult.count} new files into the database.`
     );
   }
 
-  modifiedFiles.forEach((file) => {
-    transactionOperations.push(
-      prisma.repositoryFile.updateMany({
+  if (modifiedFiles.length > 0) {
+    console.log(
+      `⚙️ Updating ${modifiedFiles.length} modified files one by one...`
+    );
+
+    let index = 1;
+
+    for (const file of modifiedFiles) {
+      const updateResult = await prisma.repositoryFile.updateMany({
         where: { repositoryId: repoId, relativePath: file.relativePath },
         data: {
           hash: file.hash,
@@ -102,17 +113,17 @@ export async function syncDatabaseWithFiles(
           summary: null,
           summaryStatus: FILE_SUMMARY_STATUS.PENDING,
         },
-      })
-    );
-  });
+      });
 
-  console.log(
-    `⚙️ [SyncDB] Executing Prisma transaction with ${transactionOperations.length} queries...`
-  );
+      console.log(
+        `✅ [${index}/${modifiedFiles.length}] Updated file: ${file.relativePath} (Rows affected: ${updateResult.count})`
+      );
 
-  await prisma.$transaction(transactionOperations);
+      index++;
+    }
+  }
 
-  console.log(`✅ [SyncDB] Transaction completed successfully.`);
+  console.log(`✅ Database sync completed successfully.`);
 
   return {
     addedCount: addedFiles.length,
