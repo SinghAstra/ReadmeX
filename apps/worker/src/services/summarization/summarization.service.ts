@@ -16,14 +16,14 @@ export const summarizationService = {
     fileId: string,
     repositoryId: string,
     jobId: string,
-    runId: number,
+    runId: number
   ) {
     const file = await withSlowLog(
       `DB Read: Find file ${fileId}`,
       10000,
       prisma.repositoryFile.findUnique({
         where: { id: fileId },
-      }),
+      })
     );
 
     const repo = await withSlowLog(
@@ -31,12 +31,12 @@ export const summarizationService = {
       10000,
       prisma.repository.findUnique({
         where: { id: repositoryId },
-      }),
+      })
     );
 
     if (!file || !repo) {
       throw new Error(
-        `SUMMARIZATION_ERROR: Missing records for File: ${fileId} or Repo: ${repositoryId}`,
+        `SUMMARIZATION_ERROR: Missing records for File: ${fileId} or Repo: ${repositoryId}`
       );
     }
 
@@ -46,7 +46,7 @@ export const summarizationService = {
       prisma.repositoryFile.update({
         where: { id: fileId },
         data: { summaryStatus: FILE_SUMMARY_STATUS.PROCESSING },
-      }),
+      })
     );
 
     const workspacePath = getWorkspacePath(repositoryId);
@@ -57,13 +57,13 @@ export const summarizationService = {
       const fileContent = await withSlowLog(
         `FS Read: Read file ${file.relativePath}`,
         5000,
-        fs.readFile(absoluteFilePath, "utf8"),
+        fs.readFile(absoluteFilePath, "utf8")
       );
 
       const classification = classifyFile(
         file.relativePath,
         path.basename(file.relativePath),
-        fileContent,
+        fileContent
       );
 
       let summaryText = "";
@@ -72,7 +72,7 @@ export const summarizationService = {
         summaryText = classification.staticSummary;
 
         console.log(
-          `[Run ${runId}] ⚡ FAST-TRACK | Bypassed AI overhead for ${classification.category} resource: ${file.relativePath}`,
+          `[Run ${runId}] ⚡ FAST-TRACK | Bypassed AI overhead for ${classification.category} resource: ${file.relativePath}`
         );
       } else {
         const contentTokens = estimateTokenCount(fileContent);
@@ -86,13 +86,13 @@ export const summarizationService = {
           summaryText = await withSlowLog(
             `AI Gen (Chunked): ${file.relativePath}`,
             30000,
-            generateChunkedSummary(runId, file.relativePath, fileContent),
+            generateChunkedSummary(runId, file.relativePath, fileContent)
           );
         } else {
           summaryText = await withSlowLog(
             `AI Gen (Direct): ${file.relativePath}`,
             30000,
-            generateSummaryDirectly(runId, file.relativePath, fileContent),
+            generateSummaryDirectly(runId, file.relativePath, fileContent)
           );
         }
       }
@@ -106,13 +106,13 @@ export const summarizationService = {
             summary: summaryText,
             summaryStatus: FILE_SUMMARY_STATUS.COMPLETED,
           },
-        }),
+        })
       );
 
       await withSlowLog(
         `Redis/DB: Update Global Progress for ${repositoryId}`,
         15000,
-        updateGlobalProgress(repositoryId, jobId, workspacePath),
+        updateGlobalProgress(repositoryId, jobId)
       );
     } catch (error: unknown) {
       await withSlowLog(
@@ -121,7 +121,7 @@ export const summarizationService = {
         prisma.repositoryFile.update({
           where: { id: fileId },
           data: { summaryStatus: FILE_SUMMARY_STATUS.FAILED },
-        }),
+        })
       );
 
       throw error;
