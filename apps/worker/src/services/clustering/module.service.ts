@@ -7,15 +7,9 @@ export const moduleService = {
       `🚂 [Module Service] Queuing clustering job for repo ${repositoryId}`
     );
 
-    await moduleGenerationQueue.add(
-      JOB_NAMES.GENERATE_MODULES,
-      {
-        repositoryId,
-        jobId,
-      },
-      {
-        jobId: `clustering-${jobId}`,
-      }
-    );
+    await moduleGenerationQueue.add(JOB_NAMES.GENERATE_MODULES, {
+      repositoryId,
+      jobId,
+    });
   },
 };
