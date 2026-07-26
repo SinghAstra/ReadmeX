@@ -109,7 +109,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
             const rawText = String(codeElement?.props?.children ?? "").replace(
               /\n$/,
-              "",
+              ""
             );
 
             const isCopied = copiedCode === rawText;

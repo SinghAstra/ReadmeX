@@ -25,7 +25,7 @@ export interface AIRequestPayload {
 
 export async function executeAIRequest(
   runId: number,
-  payload: AIRequestPayload,
+  payload: AIRequestPayload
 ): Promise<Groq.Chat.Completions.ChatCompletion | null> {
   const totalTaskStartTime = Date.now();
 
@@ -38,7 +38,7 @@ export async function executeAIRequest(
   const startTimeSec = ((Date.now() - totalTaskStartTime) / 1000).toFixed(2);
 
   console.log(
-    `[Run ${runId}] 📡 START | Key Index: TBD | Result: N/A | Active Slots: ${initialActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${initialQueue} | Time: ${startTimeSec}s`,
+    `[Run ${runId}] 📡 START | Key Index: TBD | Result: N/A | Active Slots: ${initialActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${initialQueue} | Time: ${startTimeSec}s`
   );
 
   await acquire(runId, totalTaskStartTime);
@@ -63,7 +63,7 @@ export async function executeAIRequest(
               messages: payload.messages,
               temperature: payload.temperature ?? 0.1,
             }),
-            ENGINE_CONFIG.DEFAULT_REQUEST_TIMEOUT_MS,
+            ENGINE_CONFIG.DEFAULT_REQUEST_TIMEOUT_MS
           );
 
           return { data: res, keyIndex: keyInfo.index };
@@ -73,7 +73,7 @@ export async function executeAIRequest(
           if (classification.isRateLimit) {
             await coolDownKey(
               keyInfo.index,
-              ENGINE_CONFIG.COOL_DOWN_DURATION_MS,
+              ENGINE_CONFIG.COOL_DOWN_DURATION_MS
             );
           }
 
@@ -81,7 +81,7 @@ export async function executeAIRequest(
         }
       },
       runId,
-      totalTaskStartTime,
+      totalTaskStartTime
     );
 
     const totalExecutionTimeSec = (
@@ -107,7 +107,7 @@ export async function executeAIRequest(
         : textSnippet;
 
     console.log(
-      `[Run ${runId}] ✅ SUCCESS | Key Index: ${outcome.keyIndex} | Result: "${displayResult}" | Active Slots: ${successActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${successQueue} | Time: ${totalExecutionTimeSec}s`,
+      `[Run ${runId}] ✅ SUCCESS | Key Index: ${outcome.keyIndex} | Result: "${displayResult}" | Active Slots: ${successActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${successQueue} | Time: ${totalExecutionTimeSec}s`
     );
 
     return outcome.data;
@@ -139,7 +139,7 @@ export async function executeAIRequest(
     const errorMessage = apiError.message || String(actualException);
 
     console.log(
-      `[Run ${runId}] 🚨 FATAL | Key Index: ${finalResolvedKeyIndex} | Result: "${errorMessage}" | Active Slots: ${failureActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${failureQueue} | Time: ${totalExecutionTimeSec}s`,
+      `[Run ${runId}] 🚨 FATAL | Key Index: ${finalResolvedKeyIndex} | Result: "${errorMessage}" | Active Slots: ${failureActive}/${ENGINE_CONFIG.MAX_CONCURRENT_REQUESTS} | Queue Size: ${failureQueue} | Time: ${totalExecutionTimeSec}s`
     );
 
     return null;

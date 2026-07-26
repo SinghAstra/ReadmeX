@@ -13,7 +13,7 @@ export interface TerminalMessage {
 export function useJobLiveStream(
   jobId: string,
   repositoryId: string,
-  accessToken: string | undefined,
+  accessToken: string | undefined
 ) {
   const queryClient = useQueryClient();
 

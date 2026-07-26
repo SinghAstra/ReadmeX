@@ -26,7 +26,7 @@ export async function POST(request: Request): Promise<Response> {
           success: false,
           error: "Missing required payload fields parameters.",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -48,7 +48,7 @@ export async function POST(request: Request): Promise<Response> {
 
     return NextResponse.json(
       { success: false, error: "Internal Serverless Fault" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -6,7 +6,7 @@ export const validateBody = (schema: z.ZodTypeAny) => {
   return async (
     req: Request,
     _res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const parsed = await schema.parseAsync(req.body);
@@ -32,7 +32,7 @@ export const validateQuery = (schema: z.ZodTypeAny) => {
   return async (
     req: Request,
     _res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const parsed = await schema.parseAsync(req.query);

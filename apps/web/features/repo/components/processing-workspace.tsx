@@ -26,7 +26,7 @@ export function ProcessingWorkspace({ repo }: ProcessingWorkspaceProps) {
   const { liveMessages } = useJobLiveStream(
     activeJobId,
     repo.id,
-    session?.accessToken,
+    session?.accessToken
   );
 
   const allTerminalMessages = useMemo(() => {

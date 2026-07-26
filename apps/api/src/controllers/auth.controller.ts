@@ -7,7 +7,7 @@ export const authController = {
   signUp: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.signUpUser(req.body);
@@ -21,7 +21,7 @@ export const authController = {
   verifyEmail: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const { token } = req.query as VerifyEmailFormValues;
@@ -41,7 +41,7 @@ export const authController = {
   resendVerification: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.resendVerificationToken(req.body);
@@ -55,7 +55,7 @@ export const authController = {
   signIn: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.signInUser(req.body);
@@ -69,7 +69,7 @@ export const authController = {
   oauthGoogle: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.oauthGoogleLogin(req.body);
@@ -83,7 +83,7 @@ export const authController = {
   forgotPassword: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.requestPasswordReset(req.body);
@@ -100,7 +100,7 @@ export const authController = {
   resetPassword: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const responseData = await authService.resetPassword(req.body);

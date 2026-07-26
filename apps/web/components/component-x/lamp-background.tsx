@@ -140,7 +140,7 @@ function LampBackground({
       className={cn(
         "absolute inset-0 flex z-[-1]",
         containerFlexClass,
-        className,
+        className
       )}
       style={{ gap: 0, maskImage: maskImageStyle }}
     >

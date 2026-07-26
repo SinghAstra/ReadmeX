@@ -7,7 +7,7 @@ export function getCachedClient(apiKey: string, keyIndex: number): Groq {
 
   if (!client) {
     console.log(
-      `🔌 [Client Cache] 🆕 Initializing brand new Groq SDK client instance for Key Index ${keyIndex}...`,
+      `🔌 [Client Cache] 🆕 Initializing brand new Groq SDK client instance for Key Index ${keyIndex}...`
     );
 
     client = new Groq({ apiKey });

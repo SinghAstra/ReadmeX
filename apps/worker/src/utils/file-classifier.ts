@@ -62,7 +62,7 @@ const PATH_STATIC_ASSETS = [
 export function classifyFile(
   relativePath: string,
   fileName: string,
-  content: string,
+  content: string
 ): ClassificationResult {
   const normalizedPath = relativePath.toLowerCase().replace(/\\/g, "/");
 
@@ -72,7 +72,7 @@ export function classifyFile(
     IGNORED_DIRECTORIES.some(
       (dir) =>
         normalizedPath.includes(`/${dir}/`) ||
-        normalizedPath.startsWith(`${dir}/`),
+        normalizedPath.startsWith(`${dir}/`)
     )
   ) {
     return {

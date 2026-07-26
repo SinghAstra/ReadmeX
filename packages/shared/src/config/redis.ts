@@ -9,7 +9,7 @@ if (!redisUrl) {
   throw new Error(
     "🚨 [REDIS ENGINE FAULT] process.env.REDIS_URL is completely undefined.\n" +
       "   Ensure your application entry point calls 'dotenv.config()' and runs its " +
-      "   validation layers BEFORE importing any components from the shared library bundle.",
+      "   validation layers BEFORE importing any components from the shared library bundle."
   );
 }
 

@@ -33,43 +33,43 @@ export const authApi = {
   verifyEmail: (token: string): Promise<ApiResponse<VerifyEmailResponse>> => {
     return apiClient.get(
       `/api/auth/verify-email?token=${encodeURIComponent(token)}`,
-      verifyEmailResponseSchema,
+      verifyEmailResponseSchema
     );
   },
   resendVerification: (
-    data: ResendVerificationFormValues,
+    data: ResendVerificationFormValues
   ): Promise<ApiResponse<ResendVerificationResponse>> => {
     return apiClient.post(
       "/api/auth/resend-verification",
       data,
-      resendVerificationResponseSchema,
+      resendVerificationResponseSchema
     );
   },
   googleLogin: (
-    data: GoogleOauthInput,
+    data: GoogleOauthInput
   ): Promise<ApiResponse<OAuthLoginResponse>> => {
     return apiClient.post(
       "/api/auth/oauth/google",
       data,
-      oauthLoginResponseSchema,
+      oauthLoginResponseSchema
     );
   },
   forgotPassword: (
-    data: ForgotPasswordFormValues,
+    data: ForgotPasswordFormValues
   ): Promise<ApiResponse<ForgotPasswordResponse>> => {
     return apiClient.post(
       "/api/auth/forgot-password",
       data,
-      forgotPasswordResponseSchema,
+      forgotPasswordResponseSchema
     );
   },
   resetPassword: (
-    data: ResetPasswordFormValues,
+    data: ResetPasswordFormValues
   ): Promise<ApiResponse<ResetPasswordResponse>> => {
     return apiClient.post(
       "/api/auth/reset-password",
       data,
-      resetPasswordResponseSchema,
+      resetPasswordResponseSchema
     );
   },
 };

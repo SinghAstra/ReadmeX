@@ -2,10 +2,10 @@ import { RepositoryFile } from "@prisma/client";
 import { FileSummaryStatus, RepositoryTreeNode } from "@repo/shared";
 
 export function buildRepositoryTree(
-  files: RepositoryFile[],
+  files: RepositoryFile[]
 ): RepositoryTreeNode[] {
   console.log(
-    `📊 [Tree Builder] Starting compilation. Total raw records received: ${files.length}`,
+    `📊 [Tree Builder] Starting compilation. Total raw records received: ${files.length}`
   );
 
   const root: RepositoryTreeNode = {
@@ -30,7 +30,7 @@ export function buildRepositoryTree(
       const runningPath = parts.slice(0, i + 1).join("/");
 
       let targetNode = currentElement.children.find(
-        (child) => child.name === part,
+        (child) => child.name === part
       );
 
       if (!targetNode) {

@@ -23,7 +23,7 @@ const Navbar = () => {
       className={cn(
         "sticky top-0 inset-x-0 p-4 w-full z-50 transition-all duration-300 ease-in-out border-b border-transparent",
         hasScrolled &&
-          "bg-background/80 backdrop-blur-md border-border/40 shadow-sm",
+          "bg-background/80 backdrop-blur-md border-border/40 shadow-sm"
       )}
     >
       <div className="flex items-center justify-between max-w-7xl mx-auto w-full">

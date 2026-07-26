@@ -70,7 +70,7 @@ const MovingBorder = ({
     <div
       className={cn(
         "relative border p-[2px] overflow-hidden rounded",
-        className,
+        className
       )}
     >
       <motion.div

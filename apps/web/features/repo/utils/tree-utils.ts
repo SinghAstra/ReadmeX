@@ -20,6 +20,6 @@ export function compileProjectSummaryText(nodes: RepositoryTreeNode[]): string {
   traverse(nodes);
 
   return sections.join(
-    "\n\n------------------------------------------------\n\n",
+    "\n\n------------------------------------------------\n\n"
   );
 }

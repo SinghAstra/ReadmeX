@@ -20,7 +20,7 @@ export function useIngestRepo(): UseMutationResult<
 
   return useMutation<CreateRepoResponse, MutationError, IngestRepoInput>({
     mutationFn: async (
-      values: IngestRepoInput,
+      values: IngestRepoInput
     ): Promise<CreateRepoResponse> => {
       const response = await ingestRepoAction(values);
 

@@ -169,7 +169,7 @@ export function OTPInputBox({ index }: OTPInputBoxProps) {
         isFocused && "border-primary ring-2 ring-primary/20",
         "active:scale-95",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        "touch-manipulation",
+        "touch-manipulation"
       )}
       aria-label={`OTP digit ${index + 1}`}
     />

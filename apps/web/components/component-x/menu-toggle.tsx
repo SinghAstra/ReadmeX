@@ -61,7 +61,7 @@ export function MenuToggle({
         "hover:bg-muted/20 transition-all duration-300 rounded relative border",
         sizeClasses[size],
         disabled && "opacity-50 cursor-not-allowed",
-        className,
+        className
       )}
       onClick={toggleMenu}
       aria-label={ariaLabel || (isOpen ? "Close menu" : "Open menu")}
@@ -79,7 +79,7 @@ export function MenuToggle({
               size === "sm" ? "w-4" : size === "md" ? "w-5" : "w-6",
               isOpen
                 ? `rotate-45 ${size === "sm" ? "w-5" : size === "md" ? "w-6" : "w-7"}`
-                : "rotate-0",
+                : "rotate-0"
             )}
           ></div>
           <div
@@ -89,7 +89,7 @@ export function MenuToggle({
               size === "sm" ? "w-3" : size === "md" ? "w-4" : "w-5",
               isOpen
                 ? `-rotate-45 ${size === "sm" ? "w-5" : size === "md" ? "w-6" : "w-7"}`
-                : "rotate-0",
+                : "rotate-0"
             )}
           ></div>
         </div>
@@ -102,7 +102,7 @@ export function MenuToggle({
           className={cn(
             `text-foreground transition-all duration-300`,
             iconSizeClasses[size],
-            isOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-45",
+            isOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-45"
           )}
         />
       </div>

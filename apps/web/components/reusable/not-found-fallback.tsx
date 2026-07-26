@@ -40,7 +40,7 @@ export function NotFoundFallback({
             href={actionHref}
             className={cn(
               buttonVariants({ size: "sm" }),
-              "group gap-2 w-full cursor-pointer",
+              "group gap-2 w-full cursor-pointer"
             )}
           >
             {actionLabel}

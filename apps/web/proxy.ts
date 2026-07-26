@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
   const isProtectedRoute = PROTECTED_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (token && (isAuthRoute || pathname === ROUTES.HOME)) {

@@ -71,7 +71,7 @@ export interface ChunkOptions {
 
 export function chunkTreeIntoBuckets(
   files: FileNode[],
-  options: ChunkOptions,
+  options: ChunkOptions
 ): Bucket[] {
   const rootNode = buildVirtualTree(files);
 

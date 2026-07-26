@@ -17,7 +17,7 @@ async function request<T>(
   method: string,
   path: string,
   payloadSchema: z.ZodType<T>,
-  options: RequestOptions = {},
+  options: RequestOptions = {}
 ): Promise<ApiResponse<T>> {
   const baseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
 
@@ -113,14 +113,14 @@ export const apiClient = {
     path: string,
     body: unknown,
     schema: z.ZodType<T>,
-    options?: RequestOptions,
+    options?: RequestOptions
   ) => request<T>("POST", path, schema, { ...options, body }),
 
   put: <T>(
     path: string,
     body: unknown,
     schema: z.ZodType<T>,
-    options?: RequestOptions,
+    options?: RequestOptions
   ) => request<T>("PUT", path, schema, { ...options, body }),
 
   delete: <T>(path: string, schema: z.ZodType<T>, options?: RequestOptions) =>

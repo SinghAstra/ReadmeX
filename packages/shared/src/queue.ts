@@ -22,17 +22,17 @@ const queueOptions: QueueOptions = {
 
 export const repositoryIngestionQueue = new Queue<RepoIngestionJobData>(
   QUEUE_NAMES.REPOSITORY_INGESTION,
-  queueOptions,
+  queueOptions
 );
 
 export const fileSummarizationQueue = new Queue<FileSummarizationJobData>(
   QUEUE_NAMES.FILE_SUMMARIZATION,
-  queueOptions,
+  queueOptions
 );
 
 export const readmeGenerationQueue = new Queue<ReadmeGenerationJobData>(
   QUEUE_NAMES.README_GENERATION,
-  queueOptions,
+  queueOptions
 );
 
 export async function deleteAllJobsInQueue(queue: Queue) {

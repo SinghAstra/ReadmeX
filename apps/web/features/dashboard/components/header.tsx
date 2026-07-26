@@ -57,7 +57,7 @@ export function DashboardHeader() {
               size="sm"
               onClick={() => router.back()}
               className={cn(
-                "hidden md:inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-all duration-200 cursor-pointer rounded border hover:bg-muted/50 select-none",
+                "hidden md:inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-all duration-200 cursor-pointer rounded border hover:bg-muted/50 select-none"
               )}
             >
               <ArrowLeft className="size-4 animate-in fade-in duration-300" />

@@ -87,7 +87,7 @@ export const repositoryTreeNodeSchema: z.ZodType<RepositoryTreeNode> = z.lazy(
       summaryStatus: fileSummaryStatusSchema.optional(),
       summary: z.string().nullable().optional(),
       children: z.array(repositoryTreeNodeSchema),
-    }),
+    })
 );
 
 export type RepositoryStatus = z.infer<typeof repositoryStatusSchema>;
@@ -106,7 +106,7 @@ export const ingestRepoSchema = z.object({
     .url("Please provide a valid absolute web URL.")
     .regex(
       GITHUB_URL_REGEX,
-      "Input must follow a standard public GitHub URL structure (e.g., https://github.com/owner/repo).",
+      "Input must follow a standard public GitHub URL structure (e.g., https://github.com/owner/repo)."
     ),
 });
 
@@ -117,7 +117,7 @@ export function parseGitHubUrl(url: string): { owner: string; name: string } {
 
   if (!match || !match[1] || !match[2]) {
     throw new Error(
-      "INVALID_GITHUB_SIGNATURE: Failed to extract structural parameters.",
+      "INVALID_GITHUB_SIGNATURE: Failed to extract structural parameters."
     );
   }
 

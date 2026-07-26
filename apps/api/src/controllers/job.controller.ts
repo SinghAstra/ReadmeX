@@ -31,7 +31,7 @@ export const jobController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in again.",
+          "Please sign in again."
         );
       }
 
@@ -40,7 +40,7 @@ export const jobController = {
       if (!idParamParse.success) {
         throw new BadRequestError(
           COMMON_ERROR_CODES.VALIDATION_ERROR,
-          "Invalid identifier format.",
+          "Invalid identifier format."
         );
       }
 
@@ -69,7 +69,7 @@ export const jobController = {
       if (!idParamParse.success || !queryParse.success) {
         throw new BadRequestError(
           COMMON_ERROR_CODES.VALIDATION_ERROR,
-          "Invalid stream parameters.",
+          "Invalid stream parameters."
         );
       }
 
@@ -104,7 +104,7 @@ export const jobController = {
       if (!payloadContext) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Session expired.",
+          "Session expired."
         );
       }
 
@@ -115,7 +115,7 @@ export const jobController = {
       if (!activeJob) {
         throw new NotFoundError(
           COMMON_ERROR_CODES.RESOURCE_NOT_FOUND,
-          "Job not found.",
+          "Job not found."
         );
       }
 
@@ -144,7 +144,7 @@ export const jobController = {
         (_channel: string, messagePayloadString: string) => {
           try {
             const parsedEvent = telemetryEventSchema.parse(
-              JSON.parse(messagePayloadString),
+              JSON.parse(messagePayloadString)
             );
 
             writeSseEvent(res, parsedEvent);
@@ -163,7 +163,7 @@ export const jobController = {
 
             writeSseEvent(res, { error: "MALFORMED_TELEMETRY_FRAME" });
           }
-        },
+        }
       );
 
       await telemetrySubscriber.subscribe(channelCoordinate);

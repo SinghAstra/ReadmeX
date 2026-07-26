@@ -13,7 +13,7 @@ export const readmeGenerationWorker = new Worker<ReadmeGenerationJobData>(
   {
     connection: redisConnection,
     concurrency: 4,
-  },
+  }
 );
 
 readmeGenerationWorker.on("failed", (job, error) => {
@@ -21,11 +21,11 @@ readmeGenerationWorker.on("failed", (job, error) => {
 });
 
 readmeGenerationWorker.on("ready", () =>
-  console.log("readmeGenerationWorker ready"),
+  console.log("readmeGenerationWorker ready")
 );
 
 readmeGenerationWorker.on("active", (job) =>
-  console.log("readmeGenerationWorker active", job.id),
+  console.log("readmeGenerationWorker active", job.id)
 );
 
 readmeGenerationWorker.on("error", (err) => {

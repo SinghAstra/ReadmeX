@@ -38,12 +38,12 @@ export const mailService = {
         const errorData = await response.json();
 
         throw new Error(
-          `VERCEL_API_EMAIL_FAILURE: ${JSON.stringify(errorData)}`,
+          `VERCEL_API_EMAIL_FAILURE: ${JSON.stringify(errorData)}`
         );
       }
 
       console.log(
-        `[Vercel Route Sync] Verification link delegated to Next.js successfully for -> ${email}`,
+        `[Vercel Route Sync] Verification link delegated to Next.js successfully for -> ${email}`
       );
     } catch (error) {
       logError(error);
@@ -80,12 +80,12 @@ export const mailService = {
         const errorData = await response.json();
 
         throw new Error(
-          `VERCEL_API_EMAIL_FAILURE: ${JSON.stringify(errorData)}`,
+          `VERCEL_API_EMAIL_FAILURE: ${JSON.stringify(errorData)}`
         );
       }
 
       console.log(
-        `[Vercel Route Sync] Password reset link delegated to Next.js successfully for -> ${email}`,
+        `[Vercel Route Sync] Password reset link delegated to Next.js successfully for -> ${email}`
       );
     } catch (error) {
       logError(error);

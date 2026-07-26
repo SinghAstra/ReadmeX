@@ -5,7 +5,7 @@ import { AppError } from "../errors/api-errors.js";
 export const globalErrorHandler = (
   error: Error,
   _req: Request,
-  res: Response,
+  res: Response
 ) => {
   if (error instanceof AppError) {
     res.status(error.statusCode).json({

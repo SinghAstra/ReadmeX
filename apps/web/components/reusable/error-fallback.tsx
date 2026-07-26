@@ -66,7 +66,7 @@ export function ErrorFallback({
             href={fallbackHref}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
-              "group gap-2 w-full",
+              "group gap-2 w-full"
             )}
           >
             Back to {pageName} page

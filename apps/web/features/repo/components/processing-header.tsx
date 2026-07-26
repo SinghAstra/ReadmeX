@@ -41,7 +41,7 @@ export function ProcessingHeader() {
   const isRepoView = !!repositoryId && !!repository;
 
   const { mutateAsync: boostRepo, isPending: isBoosting } = useBoostRepository(
-    repositoryId ?? "",
+    repositoryId ?? ""
   );
 
   const handleBoostExecution = () => {
@@ -93,7 +93,7 @@ export function ProcessingHeader() {
                       alt={`${repository.name} logo`}
                       className={cn(
                         "object-cover",
-                        STATUS_BORDER_MAP[repository.status],
+                        STATUS_BORDER_MAP[repository.status]
                       )}
                     />
                     <AvatarFallback className="rounded bg-primary/10 text-primary border border-primary/10 flex items-center justify-center">
@@ -136,7 +136,7 @@ export function ProcessingHeader() {
                 <Zap
                   className={cn(
                     "size-3.5 sm:size-4 shrink-0",
-                    isBoosting && "animate-bounce fill-current",
+                    isBoosting && "animate-bounce fill-current"
                   )}
                 />
                 <span className="hidden sm:inline">

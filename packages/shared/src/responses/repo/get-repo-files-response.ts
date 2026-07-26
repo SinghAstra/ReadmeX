@@ -2,7 +2,7 @@ import { z } from "zod";
 import { repositoryTreeNodeSchema } from "../../schemas";
 
 export const getRepositoryFilesResponseSchema = z.array(
-  repositoryTreeNodeSchema,
+  repositoryTreeNodeSchema
 );
 
 export type GetRepositoryFilesResponse = z.infer<

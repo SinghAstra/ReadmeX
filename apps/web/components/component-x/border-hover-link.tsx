@@ -57,7 +57,7 @@ const BorderHoverLink = ({
           "absolute",
           positionClasses[borderPosition],
           "transition-transform",
-          getAnimationClasses(),
+          getAnimationClasses()
         )}
         style={{
           backgroundColor: borderColor,

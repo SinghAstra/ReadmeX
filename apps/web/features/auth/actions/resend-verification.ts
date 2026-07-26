@@ -8,7 +8,7 @@ import type {
 import { authApi } from "../api/auth-api";
 
 export async function resendVerificationAction(
-  data: ResendVerificationFormValues,
+  data: ResendVerificationFormValues
 ): Promise<ApiResponse<ResendVerificationResponse>> {
   return authApi.resendVerification(data);
 }

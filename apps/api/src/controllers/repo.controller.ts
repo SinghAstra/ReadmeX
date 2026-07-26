@@ -17,7 +17,7 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
@@ -41,7 +41,7 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
@@ -60,13 +60,13 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
       const repository = await repositoryService.getRepositoryDetail(
         id,
-        req.user.id,
+        req.user.id
       );
 
       res.status(200).json(successResponse(repository));
@@ -80,7 +80,7 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
@@ -102,13 +102,13 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
       const result = await repositoryService.resyncRepository(
         repositoryId,
-        req.user.id,
+        req.user.id
       );
 
       res.status(202).json(successResponse(result));
@@ -124,13 +124,13 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
       const result = await repositoryService.boostRepository(
         repositoryId,
-        req.user.id,
+        req.user.id
       );
 
       res.status(202).json(successResponse(result));
@@ -146,7 +146,7 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
@@ -163,7 +163,7 @@ export const repositoryController = {
       if (!req.user) {
         throw new UnauthorizedError(
           AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-          "Please sign in to continue.",
+          "Please sign in to continue."
         );
       }
 
@@ -171,7 +171,7 @@ export const repositoryController = {
 
       const result = await repositoryService.deleteMultipleRepositories(
         ids,
-        req.user.id,
+        req.user.id
       );
 
       res.status(200).json(successResponse(result));

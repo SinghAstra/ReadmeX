@@ -17,7 +17,7 @@ export function useBoostRepository(repositoryId: string) {
     },
     onSuccess: (data) => {
       const oldRepoData = queryClient.getQueryData<GetRepositoryResponse>(
-        repoKeys.detail(repositoryId),
+        repoKeys.detail(repositoryId)
       );
 
       if (oldRepoData?.latestJobId) {

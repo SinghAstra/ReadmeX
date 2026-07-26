@@ -97,7 +97,7 @@ export function RepoHeader({ textToCopy }: RepoHeaderProps) {
                       alt={`${repository.name} logo`}
                       className={cn(
                         "object-cover",
-                        STATUS_BORDER_MAP[repository.status],
+                        STATUS_BORDER_MAP[repository.status]
                       )}
                     />
                     <AvatarFallback className="rounded bg-primary/10 text-primary border border-primary/10 flex items-center justify-center">
@@ -145,7 +145,7 @@ export function RepoHeader({ textToCopy }: RepoHeaderProps) {
                 <Disc3
                   className={cn(
                     "size-3.5 transition-transform duration-500",
-                    isResyncPending && "animate-spin",
+                    isResyncPending && "animate-spin"
                   )}
                 />
               </Button>

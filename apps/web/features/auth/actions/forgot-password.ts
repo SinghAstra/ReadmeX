@@ -8,7 +8,7 @@ import type {
 import { authApi } from "../api/auth-api";
 
 export async function forgotPasswordAction(
-  data: ForgotPasswordFormValues,
+  data: ForgotPasswordFormValues
 ): Promise<ApiResponse<ForgotPasswordResponse>> {
   return authApi.forgotPassword(data);
 }

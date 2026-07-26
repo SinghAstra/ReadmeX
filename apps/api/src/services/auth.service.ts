@@ -27,7 +27,7 @@ import { mailService } from "./mail.service.js";
 
 export const authService = {
   async signUpUser(
-    signUpFormValues: SignUpFormValues,
+    signUpFormValues: SignUpFormValues
   ): Promise<SignUpResponse> {
     const { email, password } = signUpFormValues;
 
@@ -36,7 +36,7 @@ export const authService = {
     if (existingUser) {
       throw new ConflictError(
         AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
-        "Email already registered.",
+        "Email already registered."
       );
     }
 
@@ -78,7 +78,7 @@ export const authService = {
       throw new AppError(
         404,
         AUTH_ERROR_CODES.TOKEN_NOT_FOUND,
-        "Invalid or used verification link.",
+        "Invalid or used verification link."
       );
     }
 
@@ -88,7 +88,7 @@ export const authService = {
       throw new AppError(
         400,
         AUTH_ERROR_CODES.TOKEN_EXPIRED,
-        "Verification link expired.",
+        "Verification link expired."
       );
     }
 
@@ -113,7 +113,7 @@ export const authService = {
   },
 
   async resendVerificationToken(
-    params: ResendVerificationFormValues,
+    params: ResendVerificationFormValues
   ): Promise<{ message: string }> {
     const { email } = params;
 
@@ -126,7 +126,7 @@ export const authService = {
     if (user.emailVerified) {
       throw new ConflictError(
         AUTH_ERROR_CODES.EMAIL_ALREADY_VERIFIED,
-        "Email already verified.",
+        "Email already verified."
       );
     }
 
@@ -155,7 +155,7 @@ export const authService = {
     const invalidCredentialsError = new AppError(
       401,
       AUTH_ERROR_CODES.INVALID_CREDENTIALS,
-      "Invalid email or password.",
+      "Invalid email or password."
     );
 
     if (!user || !user.passwordHash) throw invalidCredentialsError;
@@ -168,7 +168,7 @@ export const authService = {
       throw new AppError(
         403,
         AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED,
-        "Please verify your email first.",
+        "Please verify your email first."
       );
     }
 
@@ -190,7 +190,7 @@ export const authService = {
   },
 
   async oauthGoogleLogin(
-    payload: GoogleOauthInput,
+    payload: GoogleOauthInput
   ): Promise<OAuthLoginResponse> {
     const { email, name, image } = payload;
 
@@ -225,7 +225,7 @@ export const authService = {
   },
 
   async requestPasswordReset(
-    payload: ForgotPasswordFormValues,
+    payload: ForgotPasswordFormValues
   ): Promise<ForgotPasswordResponse> {
     const { email } = payload;
 
@@ -239,7 +239,7 @@ export const authService = {
       throw new AppError(
         400,
         AUTH_ERROR_CODES.PASSWORD_RESET_NOT_ALLOWED,
-        "Please sign in with Google.",
+        "Please sign in with Google."
       );
     }
 
@@ -261,7 +261,7 @@ export const authService = {
   },
 
   async resetPassword(
-    payload: ResetPasswordFormValues,
+    payload: ResetPasswordFormValues
   ): Promise<ResetPasswordResponse> {
     const { token, password } = payload;
 
@@ -272,7 +272,7 @@ export const authService = {
     if (!resetRecord) {
       throw new NotFoundError(
         AUTH_ERROR_CODES.PASSWORD_RESET_TOKEN_NOT_FOUND,
-        "Invalid or used reset link.",
+        "Invalid or used reset link."
       );
     }
 
@@ -281,7 +281,7 @@ export const authService = {
 
       throw new BadRequestError(
         AUTH_ERROR_CODES.PASSWORD_RESET_TOKEN_EXPIRED,
-        "Reset link expired.",
+        "Reset link expired."
       );
     }
 

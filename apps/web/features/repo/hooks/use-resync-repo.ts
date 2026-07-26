@@ -27,7 +27,7 @@ export function useResyncRepository(repositoryId: string) {
             status: REPOSITORY_STATUS.PROCESSING,
             latestJobId: data.jobId,
           };
-        },
+        }
       );
 
       queryClient.invalidateQueries({

@@ -8,10 +8,10 @@ import {
 } from "@repo/shared";
 
 export const getJobLogsAction = async (
-  jobId: string,
+  jobId: string
 ): Promise<ApiResponse<GetJobLogsResponse>> => {
   return apiClient.get<GetJobLogsResponse>(
     `/api/jobs/${jobId}/logs`,
-    getJobLogsResponseSchema,
+    getJobLogsResponseSchema
   );
 };
