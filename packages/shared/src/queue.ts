@@ -3,6 +3,7 @@ import { redisConnection } from "./config/redis";
 import { QUEUE_NAMES } from "./constants";
 import {
   FileSummarizationJobData,
+  ModuleGenerationJobData,
   ReadmeGenerationJobData,
   RepoIngestionJobData,
 } from "./schemas";
@@ -27,6 +28,11 @@ export const repositoryIngestionQueue = new Queue<RepoIngestionJobData>(
 
 export const fileSummarizationQueue = new Queue<FileSummarizationJobData>(
   QUEUE_NAMES.FILE_SUMMARIZATION,
+  queueOptions
+);
+
+export const moduleGenerationQueue = new Queue<ModuleGenerationJobData>(
+  QUEUE_NAMES.MODULE_GENERATION,
   queueOptions
 );
 
