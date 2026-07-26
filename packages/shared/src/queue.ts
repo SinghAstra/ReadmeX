@@ -63,6 +63,7 @@ export async function wipeAllQueues() {
   await Promise.all([
     deleteAllJobsInQueue(repositoryIngestionQueue),
     deleteAllJobsInQueue(fileSummarizationQueue),
+    deleteAllJobsInQueue(moduleGenerationQueue),
     deleteAllJobsInQueue(readmeGenerationQueue),
   ]);
 

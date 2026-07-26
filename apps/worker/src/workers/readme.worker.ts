@@ -1,18 +1,20 @@
-import { logError, QUEUE_NAMES, ReadmeGenerationJobData } from "@repo/shared";
+import { logError, QUEUE_NAMES } from "@repo/shared";
 import { redisConnection } from "@repo/shared/server";
 import { Worker, type Job } from "bullmq";
-import { readmeService } from "../services/readme.service";
+import { readmeOrchestrator } from "../services/readme/orchestrator";
 
-export const readmeGenerationWorker = new Worker<ReadmeGenerationJobData>(
+export const readmeGenerationWorker = new Worker(
   QUEUE_NAMES.README_GENERATION,
-  async (job: Job<ReadmeGenerationJobData>) => {
-    const { jobId, repositoryId } = job.data;
+  async (job: Job) => {
+    const { repositoryId, jobId } = job.data;
 
-    await readmeService.processReadmeGeneration(repositoryId, jobId);
+    console.log(`[Worker] Starting Readme Generation Job...`);
+
+    await readmeOrchestrator.processReadmeGeneration(repositoryId, jobId);
   },
   {
     connection: redisConnection,
-    concurrency: 4,
+    concurrency: 5,
   }
 );
 

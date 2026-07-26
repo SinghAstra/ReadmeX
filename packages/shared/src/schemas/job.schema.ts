@@ -30,7 +30,7 @@ export const fileSummarizationJobDataSchema = z.object({
 
 export const moduleGenerationJobDataSchema = z.object({
   jobId: z.uuid(),
-  repositoryId: z.string().uuid(),
+  repositoryId: z.uuid(),
 });
 
 export const readmeGenerationJobDataSchema = z.object({

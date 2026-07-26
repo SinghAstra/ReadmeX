@@ -1,39 +1,18 @@
-import { prisma } from "@repo/db";
-import { JOB_STATUS, REPOSITORY_STATUS } from "@repo/shared";
+import { JOB_STATUS } from "@repo/shared";
 import { trackProgress } from "@repo/shared/server";
+import { readmeService } from "../readme/readme.service";
 
 export async function finalizeClustering(repositoryId: string, jobId: string) {
   console.log(
-    `⚙️ [Clustering DB] Updating repository ${repositoryId} status to COMPLETED...`
+    `✅ [Clustering DB] All modules generated. Triggering Readme Generation...`
   );
-
-  await prisma.repository.update({
-    where: { id: repositoryId },
-    data: {
-      status: REPOSITORY_STATUS.COMPLETED,
-    },
-  });
-
-  console.log(
-    `⚙️ [Clustering DB] Updating job ${jobId} status to COMPLETED...`
-  );
-
-  await prisma.job.update({
-    where: { id: jobId },
-    data: {
-      status: JOB_STATUS.COMPLETED,
-      completedAt: new Date(),
-    },
-  });
 
   await trackProgress({
     jobId,
     repositoryId,
-    status: JOB_STATUS.COMPLETED,
-    message: "Analysis complete! Loading workspace...",
+    status: JOB_STATUS.RUNNING,
+    message: "Modules grouped! Drafting README...",
   });
 
-  console.log(
-    `✅ [Clustering DB] Repository clustering successfully finalized.`
-  );
+  await readmeService.triggerReadmeGeneration(repositoryId, jobId);
 }
