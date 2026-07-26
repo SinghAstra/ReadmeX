@@ -8,6 +8,7 @@ import { scanWorkspace } from "./scanner";
 import { dispatchSummaryJobs } from "./dispatcher";
 import { syncFileIndex } from "./indexer";
 import { ScanStats } from "./types";
+import { moduleService } from "../clustering/module.service";
 
 export const ingestor = {
   async run(jobId: string) {
@@ -131,6 +132,21 @@ export const ingestor = {
           status: JOB_STATUS.RUNNING,
           message: `Initializing AI analysis for ${targetsToQueue.length} files...`,
         });
+      } else if (deletedCount > 0 || !repo.readme) {
+        // ✨ If no files need summaries, but files were deleted OR the README is missing,
+        // we skip summarization and jump straight to clustering!
+        console.log(
+          `⚙️ [Ingestor DB] Files up to date, but README missing or files deleted. Jumping to clustering...`
+        );
+
+        await trackProgress({
+          jobId,
+          repositoryId: repo.id,
+          status: JOB_STATUS.RUNNING,
+          message: "Files are up to date! Proceeding to grouping...",
+        });
+
+        await moduleService.triggerModuleGeneration(repo.id, jobId);
       } else {
         console.log(
           `⚙️ [Ingestor DB] No files require analysis. Updating repo ${repo.id} to COMPLETED...`
