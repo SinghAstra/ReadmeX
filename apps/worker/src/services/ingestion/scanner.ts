@@ -1,14 +1,14 @@
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { TraversalStats } from "./types";
 import { IGNORED_DIRECTORIES, SUPPORTED_EXTENSIONS } from "./constants";
+import { ScanStats } from "./types";
 
-export async function traverseDirectory(
+export async function scanWorkspace(
   basePath: string,
   currentPath: string,
-  stats: TraversalStats
-): Promise<void> {
+  stats: ScanStats
+) {
   const entries = await fs.readdir(currentPath, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -25,7 +25,7 @@ export async function traverseDirectory(
 
       stats.totalFolders += 1;
 
-      await traverseDirectory(basePath, fullPath, stats);
+      await scanWorkspace(basePath, fullPath, stats);
     } else if (entry.isFile()) {
       stats.totalFiles += 1;
 
