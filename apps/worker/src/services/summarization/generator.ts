@@ -1,8 +1,31 @@
 import { MODEL_CONFIG } from "../../ai/model-config";
 import { executeAIRequest } from "../../ai/request-manager";
-import { SYSTEM_PROMPT } from "../../prompt";
+import { SYSTEM_PROMPT } from "./prompts";
 
-export async function generateChunkedSummary(
+export async function summarizeDirectly(
+  runId: number,
+  relativePath: string,
+  content: string
+): Promise<string> {
+  console.log(`🤖 [Generator] Generating direct summary for: ${relativePath}`);
+
+  const aiResponse = await executeAIRequest(runId, {
+    model: MODEL_CONFIG.activeModel,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      {
+        role: "user",
+        content: `Explain why this file exists and its primary responsibility:\n\nPath: ${relativePath}\n\nContent:\n${content}`,
+      },
+    ],
+  });
+
+  return (
+    aiResponse?.choices[0]?.message?.content?.trim() || "No summary written."
+  );
+}
+
+export async function summarizeChunked(
   runId: number,
   relativePath: string,
   content: string
@@ -34,7 +57,7 @@ export async function generateChunkedSummary(
   const chunksToProcess = isTruncated ? chunks.slice(0, 2) : chunks;
 
   console.log(
-    `[Run ${runId}] 🧩 File: ${relativePath} split into ${totalOriginalChunks} chunks. Processing: ${chunksToProcess.length} (Truncated: ${isTruncated})`
+    `🧩 [Generator] [Run ${runId}] File: ${relativePath} split into ${totalOriginalChunks} chunks. Processing ${chunksToProcess.length} (Truncated: ${isTruncated})`
   );
 
   const intermediateSummaries: string[] = [];
@@ -43,12 +66,10 @@ export async function generateChunkedSummary(
     const chunkResponse = await executeAIRequest(runId, {
       model: MODEL_CONFIG.activeModel,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
+        { role: "system", content: SYSTEM_PROMPT },
         {
           role: "user",
-          content: `Summary step (${i + 1}/${
-            chunksToProcess.length
-          }) for "${relativePath}":\n\nCode:\n${chunksToProcess[i]}`,
+          content: `Summary step (${i + 1}/${chunksToProcess.length}) for "${relativePath}":\n\nCode:\n${chunksToProcess[i]}`,
         },
       ],
     });
@@ -65,7 +86,7 @@ export async function generateChunkedSummary(
   const reductionResponse = await executeAIRequest(runId, {
     model: MODEL_CONFIG.activeModel,
     messages: [
-      { role: "system", content: SYSTEM_PROMPT.FILE_SUMMARY },
+      { role: "system", content: SYSTEM_PROMPT },
       {
         role: "user",
         content: `Synthesize these partial summaries into one cohesive overview explaining why "${relativePath}" exists and its overall responsibility:\n\n${unifiedPayload}`,
