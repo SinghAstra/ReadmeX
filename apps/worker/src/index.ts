@@ -15,7 +15,7 @@ void bootstrap();
 
 export * from "./workers/ingestion.worker";
 
-export * from "./workers/readme.worker";
+export * from "./workers/module.worker";
 
 export * from "./workers/summarization.worker";
 
